@@ -162,10 +162,10 @@ BEGIN
     LTEXT           "&Time: ",IDC_TIME_LABEL,29,53,20,8,0,WS_EX_RIGHT
     COMBOBOX        IDC_HOURS,49,51,27,94,CBS_DROPDOWNLIST | WS_VSCROLL | 
                     WS_TABSTOP
-    CONTROL         ":",IDC_COLON_LABEL,"Static",SS_SIMPLE | WS_GROUP,77,53,
-                    8,8,WS_EX_TRANSPARENT
     COMBOBOX        IDC_MINS,80,51,27,94,CBS_DROPDOWNLIST | WS_VSCROLL | 
                     WS_TABSTOP
+    CONTROL         ":",IDC_COLON_LABEL,"Static",SS_SIMPLE | WS_GROUP,77,53,
+                    8,8,WS_EX_TRANSPARENT
     CONTROL         "Sunday",IDC_SUNDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
                     WS_GROUP | WS_TABSTOP,126,51,40,10
     CONTROL         "Monday",IDC_MONDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
@@ -229,8 +229,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,2,0,30
- PRODUCTVERSION 1,2,0,30
+ FILEVERSION 1,2,0,32
+ PRODUCTVERSION 1,2,0,32
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -247,12 +247,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Progoth.com"
             VALUE "FileDescription", "iTunesAlarm Executable"
-            VALUE "FileVersion", "1.2.0.30"
+            VALUE "FileVersion", "1.2.0.32"
             VALUE "InternalName", "iTunesAlarm.exe"
             VALUE "LegalCopyright", "(c) 2004, Steven Scott.  All rights reserved."
             VALUE "OriginalFilename", "iTunesAlarm.exe"
             VALUE "ProductName", "iTunes Alarm"
-            VALUE "ProductVersion", "1.2.0.30"
+            VALUE "ProductVersion", "1.2.0.32"
         END
     END
     BLOCK "VarFileInfo"
