@@ -112,6 +112,7 @@ LRESULT CMainFrame::DoAlarm(UINT wParam, LONG lParam)
     try
     {
         ITI::Connect();
+        if( m_minimize ) ITI::Minimize();
         ITI::PlayPlaylist( m_pls, m_shuffle );
         ITI::Disconnect();
     }
@@ -120,16 +121,19 @@ LRESULT CMainFrame::DoAlarm(UINT wParam, LONG lParam)
         MessageBox( e.error().c_str() );
     }
 
-	try
-	{
-		ITI::Connect();
-		ITI::ZeroVolume();
-		CreateThread( NULL, 0, VolumeThread, this, 0, NULL );
-	}
-	catch( trterror &e )
-	{
-		MessageBox( e.error().c_str() );
-	}
+    if( m_increase )
+    {
+        try
+        {
+            ITI::Connect();
+            ITI::ZeroVolume();
+            CreateThread( NULL, 0, VolumeThread, this, 0, NULL );
+        }
+        catch( trterror &e )
+        {
+            MessageBox( e.error().c_str() );
+        }
+    }
 
     return 1;
 }
@@ -157,22 +161,25 @@ void CMainFrame::InitReg()
     if( !m_reg.has_key( _T("PlaylistName") ) )
         m_reg[_T("PlaylistName")] = _T("");//b;
     if( !m_reg.has_key( _T("Shuffle") ) )
-        m_reg[_T("Shuffle")] = (DWORD)0;
+        m_reg[_T("Shuffle")] = false;
 	if( !m_reg.has_key( _T("IncreaseVolume") ) )
-		m_reg[_T("IncreaseVolume")] = (DWORD)0;
+		m_reg[_T("IncreaseVolume")] = false;
 	if( !m_reg.has_key( _T("IncreaseTime") ) )
 		m_reg[_T("IncreaseTime")] = (DWORD)10;
+    if( !m_reg.has_key( _T("MinimizeOnAlarm") ) )
+        m_reg[_T("MinimizeOnAlarm")] = true;
 }
 
 void CMainFrame::LoadReg()
 {
 	m_hour = m_reg[_T("Hour")];
     m_minute = m_reg[_T("Minute")];
-    m_shuffle = (m_reg[_T("Shuffle")] != 0);
+    m_shuffle = m_reg[_T("Shuffle")];
     //m_pls.fromBin( ((binary)m_reg[_T("Playlist")]).data.c_str() );
     m_pls = m_reg[_T("PlaylistName")];
-	m_increase = ( (m_reg[_T("IncreaseVolume")] == 0) ) ? false : true;
+	m_increase = m_reg[_T("IncreaseVolume")];
 	m_inclength = m_reg[_T("IncreaseTime")];
+    m_minimize = m_reg[_T("MinimizeOnAlarm")];
 
 	static TCHAR buf[200];
 	_stprintf( buf, _T("iTooonz Alaaarrrm!!\nAlarm Set for %d:%02d"), m_hour, m_minute );

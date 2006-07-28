@@ -58,6 +58,7 @@ protected:
     tstring m_pls;
     bool m_shuffle;
 	bool m_increase;
+    bool m_minimize;
 	int m_inclength;
 
     DWORD m_mainThread;

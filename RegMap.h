@@ -63,6 +63,15 @@ public:
 	operator DWORD() const
 	{ if( !m_isval || m_type != NUMBER ) throw trterror( _T("DWORD requested for non-DWORD item.") ); return m_val.dword; }
 
+	operator long() const
+	{ if( !m_isval || m_type != NUMBER ) throw trterror( _T("Long requested for non-DWORD item.") ); return m_val.dword; }
+
+	operator int() const
+	{ if( !m_isval || m_type != NUMBER ) throw trterror( _T("Int requested for non-DWORD item.") ); return m_val.dword; }
+
+    operator bool() const
+    { if( !m_isval || m_type != NUMBER ) throw trterror( _T("Bool requested for non-DWORD item.") ); return (m_val.dword != 0); }
+
 	operator binary const&() const
 	{ if( !m_isval || m_type != BIN ) throw trterror( _T("Binary requested for non-binary item.") ); return *(m_val.bin); }
 
@@ -83,6 +92,10 @@ public:
     { setValue( str.c_str() ); return *this; }
     RegMap &operator=( DWORD num )
     { setValue( num ); return *this; }
+    RegMap &operator=( int num )
+    { setValue( (DWORD)num ); return *this; }
+    RegMap &operator=( bool b )
+    { setValue( ((b)?(DWORD)1:(DWORD)0 ) ); return *this; }
     RegMap &operator=( const std::vector<tstring> &strarray )
     { setValue( strarray ); return *this; }
     RegMap &operator=( const binary &bin )

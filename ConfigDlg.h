@@ -44,6 +44,7 @@ public:
 	afx_msg void OnNeedText(NMHDR *pnmh, LRESULT *pResult);
 protected:
 	CToolTipButton m_increase;
+    CToolTipButton m_minimize;
 	CSliderCtrl m_secondsSlider;
 public:
 	afx_msg void OnBnClickedIncreaseCheck();

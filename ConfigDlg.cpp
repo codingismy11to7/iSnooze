@@ -18,6 +18,9 @@ CConfigDlg::CConfigDlg(const RegMap &reg, CWnd* pParent /*=NULL*/)
 	tip.LoadString( IDS_INCREASE_TIP );
 	m_increase.SetToolTipText( &tip );
 
+    tip.LoadString( IDS_MINIMIZE_TIP );
+    m_minimize.SetToolTipText( &tip );
+
     GetPlaylists();
     FillBoxes();
     m_parentHwnd = pParent->GetSafeHwnd();
@@ -47,14 +50,18 @@ void CConfigDlg::LoadFromReg()
     SelectPlaylist();
 
     CButton *shuffle = (CButton*)GetDlgItem( IDC_CHECK_SHUFFLE );
-    if( m_reg[_T("Shuffle")] == 0 )
-        shuffle->SetCheck( BST_UNCHECKED );
-    else
-        shuffle->SetCheck( BST_CHECKED );
+    shuffle->SetCheck( (((bool)m_reg[_T("Shuffle")])?BST_CHECKED:BST_UNCHECKED) );
 
 	m_secondsSlider.SetPos( m_reg[_T("IncreaseTime")] );
-	m_increase.SetCheck( ((((int)m_reg[_T("IncreaseVolume")]) == 0) ? BST_UNCHECKED : BST_CHECKED) );
+	m_increase.SetCheck( (((bool)m_reg[_T("IncreaseVolume")]) ? BST_CHECKED : BST_UNCHECKED) );
 	OnBnClickedIncreaseCheck();
+
+    CButton *runatstartup = (CButton*)GetDlgItem( IDC_STARTUP_CHECK );
+    RegMap t(HKEY_CURRENT_USER);
+    t = t[_T("Software")][_T("Microsoft")][_T("Windows")][_T("CurrentVersion")][_T("Run")];
+    runatstartup->SetCheck( ((t.has_key(_T("iTunesAlarm")))?BST_CHECKED:BST_UNCHECKED) );
+
+    m_minimize.SetCheck( (((bool)m_reg[_T("MinimizeOnAlarm")])?BST_CHECKED:BST_UNCHECKED) );
 }
 
 void CConfigDlg::SelectPlaylist()
@@ -103,6 +110,7 @@ void CConfigDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_INCREASE_CHECK, m_increase);
 	DDX_Control(pDX, IDC_SECONDS_SLIDER, m_secondsSlider);
+    DDX_Control(pDX, IDC_MINIMIZE_CHECK, m_minimize);
 }
 
 
@@ -168,14 +176,27 @@ void CConfigDlg::OnBnClickedOk()
     }
 
     CButton *shuffle = (CButton*)GetDlgItem( IDC_CHECK_SHUFFLE );
-    if( shuffle->GetCheck() == BST_CHECKED )
-        m_reg[_T("Shuffle")] = (DWORD)1;
-    else
-        m_reg[_T("Shuffle")] = (DWORD)0;
+    m_reg[_T("Shuffle")] = ( shuffle->GetCheck() == BST_CHECKED ) ? true : false;
 
-
-	m_reg[_T("IncreaseVolume")] = ( m_increase.GetCheck() == BST_CHECKED ) ? (DWORD)1 : (DWORD)0;
+	m_reg[_T("IncreaseVolume")] = ( m_increase.GetCheck() == BST_CHECKED ) ? true : false;
 	m_reg[_T("IncreaseTime")] = m_secondsSlider.GetPos();
+
+    m_reg[_T("MinimizeOnAlarm")] = ( m_minimize.GetCheck() == BST_CHECKED ) ? true : false;
+
+    RegMap t( HKEY_CURRENT_USER );
+    t = t[_T("Software")][_T("Microsoft")][_T("Windows")][_T("CurrentVersion")][_T("Run")];
+    CButton *runonstartup = (CButton*)GetDlgItem( IDC_STARTUP_CHECK );
+    if( runonstartup->GetCheck() == BST_CHECKED )
+    {
+        TCHAR f[MAX_PATH];
+        GetModuleFileName( NULL, f, MAX_PATH );
+        t[_T("iTunesAlarm")] = f;
+    }
+    else
+    {
+        if( t.has_key( _T("iTunesAlarm") ) )
+            t.deleteValue( _T("iTunesAlarm") );
+    }
 
     ::PostMessage( m_parentHwnd, WM_CONFIG_UPDATE, 0, 0 );
 

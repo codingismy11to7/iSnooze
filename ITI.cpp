@@ -29,6 +29,7 @@ void ITI::connect()
 void ITI::disconnect()
 {
 	EnterCriticalSection( &ITI::cs );
+    if( refcount == 0 ) return;
 	if( --refcount == 0 )
 	{
 		m_iTunesApp->Release();
@@ -155,4 +156,13 @@ void ITI::setVolume( UINT level )
 {
 	if( level <= 100 )
 		m_iTunesApp->put_SoundVolume( level );
+}
+
+void ITI::minimize()
+{
+    IITBrowserWindow *bw;
+    if( FAILED(m_iTunesApp->get_BrowserWindow( &bw )) )
+        return;
+    bw->put_Minimized( -1 );
+    bw->Release();
 }

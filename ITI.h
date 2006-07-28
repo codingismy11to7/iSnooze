@@ -44,6 +44,8 @@ public:
 	{ ITI::instance()->setVolume( level ); }
 	static void ZeroVolume()
 	{ ITI::instance()->zeroVolume(); }
+    static void Minimize()
+    { ITI::instance()->minimize(); }
 
 	~ITI();
 
@@ -60,6 +62,7 @@ private:
 	void setVolume( UINT level );
 	void zeroVolume()
 	{ m_iTunesApp->put_SoundVolume(0); }
+    void minimize();
 
 	static ITI *inst;
 	static long refcount;
