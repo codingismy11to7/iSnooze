@@ -2,20 +2,20 @@
 //
 // Copyright (c) 2004, Steven Scott (progoth@gmail.com)
 //
-// This file is part of iTunesAlarm.
+// This file is part of iSnooze.
 //
-// iTunesAlarm is free software; you can redistribute it and/or modify
+// iSnooze is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 //
-// iTunesAlarm is distributed in the hope that it will be useful,
+// iSnooze is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with iTunesAlarm; if not, write to the Free Software
+// along with iSnooze; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "stdafx.h"
@@ -74,7 +74,7 @@ DWORD WINAPI TimerThread( LPVOID param )
 DWORD WINAPI VolumeThread( LPVOID param )
 {
 	CMainFrame *caller = (CMainFrame*)param;
-    int begin = 0;
+    int begin = 30;
     int end = 100;
     int increaseStep = 1;
 	int wait = (increaseStep * 1000 * caller->getVolumeLength()) / (end - begin);
@@ -142,9 +142,12 @@ CMainFrame::CMainFrame()
 : m_config(NULL), m_snoozing(false), m_alarms(7)
 {
 	m_reg = RegMap( HKEY_CURRENT_USER )[_T("Software")];
-	if( !m_reg.has_key( _T("iTunesAlarm") ) )
-		m_reg[_T("iTunesAlarm")] = RegMap();
-	m_reg = m_reg[_T("iTunesAlarm")];
+	if( !m_reg.has_key( _T("progoth.com") ) )
+		m_reg[_T("progoth.com")] = RegMap();
+	m_reg = m_reg[_T("progoth.com")];
+	if( !m_reg.has_key( _T("iSnooze") ) )
+		m_reg[_T("iSnooze")] = RegMap();
+	m_reg = m_reg[_T("iSnooze")];
 
     m_mainThread = GetCurrentThreadId();
 
@@ -385,14 +388,22 @@ void CMainFrame::LoadReg()
 	DayTime::AlarmList al;
 	DayTime::binToCont( ((binary)m_reg[_T("Alarms")]).data, al );
 
+	m_oneAlarmEnabled = m_oneAlarmExists = false;
 	DayTime::AlarmList::const_iterator i, end = al.end();
 	for( UINT j = 0; j < 7; j++ )
 	{
 		DayTime::cleanList( m_alarms[j] );
 		for( i = al.begin(); i != end; ++i )
 		{
-			if( DayTime::Win2DayTime[j] & (*i).day )
-				DayTime::addSorted( *i, m_alarms[j] );
+			m_oneAlarmExists = true;
+			if( i->isEnabled() ) //we won't even add the alarm to our list if it's disabled
+			{
+				m_oneAlarmEnabled = true;
+				if( DayTime::Win2DayTime[j] & (*i).day )
+				{
+					DayTime::addSorted( *i, m_alarms[j] );
+				}
+			}
 		}
 	}
 	SYSTEMTIME tst;
@@ -429,16 +440,15 @@ void CMainFrame::LoadReg()
 		m_systray.CheckMenuItem( ID_APP_ALARMENABLED, MF_UNCHECKED );
 
 	SetToolTip();
+	SetIcon();
 }
 
-void CMainFrame::SetToolTip()
+void CMainFrame::SetIcon()
 {
-	static TCHAR buf[1024];
-	if( m_alarmEnabled )
+	if( !m_alarmEnabled || !m_oneAlarmEnabled || !m_oneAlarmExists )
+		m_systray.SetIcon( IDI_DISABLED );
+	else
 	{
-		int hour, minute;
-
-
 		bool found = false;
 		SYSTEMTIME st;
 		GetLocalTime( &st );
@@ -446,27 +456,9 @@ void CMainFrame::SetToolTip()
 		{
 			if( m_alarms[ (i + st.wDayOfWeek) % 7 ].empty() )
 				continue;
-			m_alarms[ (i + st.wDayOfWeek) % 7 ].front()->getTime( hour, minute );
-			if( i == 0 && *(m_alarms[ (i + st.wDayOfWeek) % 7 ].front()) > DayTime::TimeAndDays( st ) )
+			if( (i != 0) || (i == 0 && *(m_alarms[ (i + st.wDayOfWeek) % 7 ].front()) > DayTime::TimeAndDays( st )) )
 			{
-				if( m_snoozing && m_snoozeAlarmTime < *(m_alarms[ (i + st.wDayOfWeek) % 7 ].front()) )
-				{
-					m_snoozeAlarmTime.getTime( hour, minute );
-					_stprintf( buf, _T("iTooonz Alaaarrrm!!\nSnoozing until %d:%02d"), hour, minute );
-				}
-				else
-					_stprintf( buf, _T("iTooonz Alaaarrrm!!\nNext alarm set for %d:%02d"), hour, minute );
-			}
-			else if( i != 0 )
-			{
-				if( m_snoozing )
-				{
-					m_snoozeAlarmTime.getTime( hour, minute );
-					_stprintf( buf, _T("iTooonz Alaaarrrm!!\nSnoozing until %d:%02d"), hour, minute );
-				}
-				else
-					_stprintf( buf, _T("iTooonz Alaaarrrm!!\nNext alarm set for %s, %d:%02d"),
-					DayTime::DayNames[ (i + st.wDayOfWeek) % 7 ], hour, minute );
+				m_systray.SetIcon( IDR_MAINFRAME );
 			}
 			else
 				continue;
@@ -474,11 +466,69 @@ void CMainFrame::SetToolTip()
 			break;
 		}
 		if( !found )
-			_stprintf( buf, _T("iTooonz Alaaarrrm!!\nNo alarms set") );
+			m_systray.SetIcon( IDI_DISABLED );
+	}
+}
+
+void CMainFrame::SetToolTip()
+{
+	static TCHAR buf[1024];
+	if( m_alarmEnabled )
+	{
+		if( !m_oneAlarmExists )
+		{
+			_tcscpy( buf, _T("iSnooze\nNo alarms have been scheduled") );
+		}
+		else if( !m_oneAlarmEnabled )
+		{
+			_tcscpy( buf, _T("iSnooze\nAll alarms have been disabled") );
+		}
+		else
+		{
+			int hour, minute;
+
+
+			bool found = false;
+			SYSTEMTIME st;
+			GetLocalTime( &st );
+			for( int i = 0; i < 8; i++ )
+			{
+				if( m_alarms[ (i + st.wDayOfWeek) % 7 ].empty() )
+					continue;
+				m_alarms[ (i + st.wDayOfWeek) % 7 ].front()->getTime( hour, minute );
+				if( i == 0 && *(m_alarms[ (i + st.wDayOfWeek) % 7 ].front()) > DayTime::TimeAndDays( st ) )
+				{
+					if( m_snoozing && m_snoozeAlarmTime < *(m_alarms[ (i + st.wDayOfWeek) % 7 ].front()) )
+					{
+						m_snoozeAlarmTime.getTime( hour, minute );
+						_stprintf( buf, _T("iSnooze\nSnoozing until %d:%02d"), hour, minute );
+					}
+					else
+						_stprintf( buf, _T("iSnooze\nNext alarm set for %d:%02d"), hour, minute );
+				}
+				else if( i != 0 )
+				{
+					if( m_snoozing )
+					{
+						m_snoozeAlarmTime.getTime( hour, minute );
+						_stprintf( buf, _T("iSnooze\nSnoozing until %d:%02d"), hour, minute );
+					}
+					else
+						_stprintf( buf, _T("iSnooze\nNext alarm set for %s, %d:%02d"),
+						DayTime::DayNames[ (i + st.wDayOfWeek) % 7 ], hour, minute );
+				}
+				else
+					continue;
+				found = true;
+				break;
+			}
+			if( !found )
+				_stprintf( buf, _T("iSnooze\nNo alarms have any days selected!") );
+		}
 
 	}
 	else
-		_tcscpy( buf, _T("iTooonz Alaaarrrm!!\nAlarm disabled") );
+		_tcscpy( buf, _T("iSnooze\nAlarm disabled") );
 	m_systray.SetTooltipText( buf );
 }
 
@@ -530,7 +580,7 @@ void CMainFrame::StartTray()
 
 	//HICON ico = ::LoadIcon( AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME) );
 	HICON ico = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR );
-	m_systray.Create( this, WM_ICON_NOTIFY, _T("iTooonz Alaaarrrm!!"), ico, IDR_POPUP_MENU );
+	m_systray.Create( this, WM_ICON_NOTIFY, _T("iSnooze"), ico, IDR_POPUP_MENU );
 
 	InitReg();
     LoadReg();
@@ -618,7 +668,8 @@ void CMainFrame::OnAlarmEnabled()
 	{
 		m_reg[_T("AlarmEnabled")] = m_alarmEnabled = true;
 		m_systray.CheckMenuItem( ID_APP_ALARMENABLED, MF_CHECKED );
-		m_systray.SetIcon( IDR_MAINFRAME );
+		//m_systray.SetIcon( IDR_MAINFRAME );
+		SetIcon();
 	}
 	SetToolTip();
 }

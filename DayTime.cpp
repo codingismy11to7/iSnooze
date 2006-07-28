@@ -1,19 +1,19 @@
 // Copyright (c) 2004, Steven Scott (progoth@gmail.com)
 //
-// This file is part of iTunesAlarm.
+// This file is part of iSnooze.
 //
-// iTunesAlarm is free software; you can redistribute it and/or modify
+// iSnooze is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 //
-// iTunesAlarm is distributed in the hope that it will be useful,
+// iSnooze is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with iTunesAlarm; if not, write to the Free Software
+// along with iSnooze; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "StdAfx.h"
@@ -24,15 +24,15 @@ using namespace DayTime;
 
 const TCHAR *DayTime::DayNames[7] = { _T("Sun"), _T("Mon"), _T("Tue"), _T("Wed"), _T("Thu"), _T("Fri"), _T("Sat") };
 
-TimeAndDays::TimeAndDays( int hour, int minute, BYTE days )
+TimeAndDays::TimeAndDays( int hour, int minute, BYTE days, bool enabled /*= true*/ )
 {
-	this->day = days;
+	this->day = days | ( enabled ? ALARM_ENABLED : 0);
 	setTime( hour, minute );
 }
 
-TimeAndDays::TimeAndDays( const SYSTEMTIME &st )
+TimeAndDays::TimeAndDays( const SYSTEMTIME &st, bool enabled /*= true*/ )
 {
-	this->day = Win2DayTime[ st.wDayOfWeek ];
+	this->day = Win2DayTime[ st.wDayOfWeek ] | ( enabled ? ALARM_ENABLED : 0);
 	setTime( st.wHour, st.wMinute );
 }
 
@@ -63,10 +63,12 @@ tstring TimeAndDays::getString() const
 	tstringstream str;
 	int hour, minute;
 	getTime( hour, minute );
+	if( !( day & ALARM_ENABLED ) )
+		str << _T("(D!) ");
 	str << hour << _T(":") << std::setw(2) << std::setfill(_T('0')) << minute << _T(" ");
-	if( day == ALL_DAYS )
+	if( (0x7f & day) == ALL_DAYS )
 		str << _T("Every day");
-	else if( day == WEEKDAYS )
+	else if( (0x7f & day) == WEEKDAYS )
 		str << _T("Mon-Fri");
 	else
 	{
@@ -110,6 +112,11 @@ void DayTime::addSorted( const TimeAndDays &tm, std::list< TimeAndDays* > &list 
 {
 	std::list< TimeAndDays* >::iterator i, end = list.end();
 
+	if( !tm.isEnabled() )
+	{
+		list.push_back( new TimeAndDays( tm ) );
+		return;
+	}
 	for( i = list.begin(); i != end; ++i )
 	{
 		if( (**i) > tm )

@@ -136,12 +136,11 @@ END
 IDD_ABOUTBOX DIALOGEX 0, 0, 235, 55
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
-CAPTION "About iTunesAlarm"
+CAPTION "About iSnooze"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
-    LTEXT           "iTunesAlarm Version 1.2.1",IDC_STATIC,40,10,119,8,
-                    SS_NOPREFIX
+    LTEXT           "iSnooze Version 1.3",IDC_STATIC,40,10,119,8,SS_NOPREFIX
     LTEXT           "Copyright (C) Steven Scott, 2004",IDC_STATIC,40,25,119,
                     8
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
@@ -149,7 +148,7 @@ BEGIN
                     WS_TABSTOP,182,25,41,19
 END
 
-IDD_CONFIG_DIALOG DIALOGEX 0, 0, 199, 244
+IDD_CONFIG_DIALOG DIALOGEX 0, 0, 199, 264
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "Configure Alarms"
@@ -159,14 +158,14 @@ BEGIN
                     WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "A&dd",IDC_ADD,22,26,44,13
     PUSHBUTTON      "De&lete",IDC_DELETE,77,26,46,13
-    GROUPBOX        "Sc&hedule",IDC_DAYS_GROUP,16,41,168,57
-    LTEXT           "&Time: ",IDC_TIME_LABEL,29,53,20,8,0,WS_EX_RIGHT
+    GROUPBOX        "Sc&hedule",IDC_DAYS_GROUP,16,41,168,75
+    LTEXT           "&Time: ",IDC_TIME_LABEL,27,53,20,8,0,WS_EX_RIGHT
     COMBOBOX        IDC_HOURS,49,51,27,94,CBS_DROPDOWNLIST | WS_VSCROLL | 
                     WS_TABSTOP
-    COMBOBOX        IDC_MINS,80,51,27,94,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
-    CONTROL         ":",IDC_COLON_LABEL,"Static",SS_SIMPLE | WS_GROUP,77,53,
+    CONTROL         ":",IDC_COLON_LABEL,"Static",SS_SIMPLE | WS_GROUP,81,53,
                     8,8,WS_EX_TRANSPARENT
+    COMBOBOX        IDC_MINS,88,51,27,94,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
     CONTROL         "Sunday",IDC_SUNDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
                     WS_GROUP | WS_TABSTOP,126,51,40,10
     CONTROL         "Monday",IDC_MONDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
@@ -181,35 +180,37 @@ BEGIN
                     WS_TABSTOP,76,85,36,10
     CONTROL         "Saturday",IDC_SATURDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
                     WS_TABSTOP,126,85,45,10
-    COMBOBOX        IDC_PLAYLISTS,12,101,175,69,CBS_DROPDOWNLIST | 
+    CONTROL         "E&nable this Alarm?",IDC_SINGLE_ENABLE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,62,101,74,10
+    COMBOBOX        IDC_PLAYLISTS,12,123,175,69,CBS_DROPDOWNLIST | 
                     WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Shuffle Play",IDC_CHECK_SHUFFLE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,40,120,55,11
-    PUSHBUTTON      "Re&fresh",IDC_BUTTON1,108,119,50,14
+                    BS_AUTOCHECKBOX | WS_TABSTOP,40,142,55,11
+    PUSHBUTTON      "Re&fresh",IDC_BUTTON1,108,141,50,14
     CONTROL         "&Increase\nVolume",IDC_INCREASE_CHECK,"Button",
-                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,15,141,47,19
+                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,15,163,47,19
     CONTROL         "",IDC_SECONDS_SLIDER,"msctls_trackbar32",TBS_BOTH | 
-                    TBS_TOOLTIPS | WS_TABSTOP,70,139,122,27
+                    TBS_TOOLTIPS | WS_TABSTOP,70,161,122,27
     CONTROL         "&Minimize iTunes\non Alarm",IDC_MINIMIZE_CHECK,"Button",
-                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,15,169,67,20
-    CONTROL         "&Run iTunesAlarm\nat Startup",IDC_STARTUP_CHECK,"Button",
-                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,107,169,67,
+                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,15,191,67,20
+    CONTROL         "&Run iSnooze\nat Startup",IDC_STARTUP_CHECK,"Button",
+                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,107,191,67,
                     20
     CONTROL         "&Enable Snooze",IDC_ENABLE_SNOOZE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,15,196,63,10
+                    BS_AUTOCHECKBOX | WS_TABSTOP,15,218,63,10
     CONTROL         "Pause on \nComputer &Access",IDC_DO_MUTE,"Button",
-                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,107,193,73,
+                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,107,215,73,
                     16
-    LTEXT           "S&nooze Time:",IDC_SNOOZE_LABEL,45,221,46,8,0,
+    LTEXT           "Snoo&ze Time:",IDC_SNOOZE_LABEL,45,243,46,8,0,
                     WS_EX_RIGHT
-    EDITTEXT        IDC_SNOOZE_TIME,94,219,30,14,ES_RIGHT | ES_AUTOHSCROLL | 
+    EDITTEXT        IDC_SNOOZE_TIME,94,241,30,14,ES_RIGHT | ES_AUTOHSCROLL | 
                     ES_NUMBER
     CONTROL         "",IDC_SNOOZE_SPIN,"msctls_updown32",UDS_SETBUDDYINT | 
-                    UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,124,219,
+                    UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,124,241,
                     11,14
     DEFPUSHBUTTON   "&OK",IDOK,142,7,50,14
     PUSHBUTTON      "&Cancel",IDCANCEL,142,24,50,14
-    LTEXT           "minutes",IDC_SNOOZE_LABEL2,127,221,26,8
+    LTEXT           "minutes",IDC_SNOOZE_LABEL2,127,243,26,8
 END
 
 IDD_SNOOZE_DIALOG DIALOGEX 0, 0, 154, 74
@@ -230,8 +231,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,2,1,41
- PRODUCTVERSION 1,2,1,41
+ FILEVERSION 1,3,0,44
+ PRODUCTVERSION 1,3,0,44
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -247,13 +248,13 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "Progoth.com"
-            VALUE "FileDescription", "iTunesAlarm Executable"
-            VALUE "FileVersion", "1.2.1.41"
-            VALUE "InternalName", "iTunesAlarm.exe"
+            VALUE "FileDescription", "iSnooze Executable"
+            VALUE "FileVersion", "1.3.0.44"
+            VALUE "InternalName", "iSnooze.exe"
             VALUE "LegalCopyright", "(c) 2004, Steven Scott.  All rights reserved."
-            VALUE "OriginalFilename", "iTunesAlarm.exe"
-            VALUE "ProductName", "iTunes Alarm"
-            VALUE "ProductVersion", "1.2.1.41"
+            VALUE "OriginalFilename", "iSnooze.exe"
+            VALUE "ProductName", "iSnooze"
+            VALUE "ProductVersion", "1.3.0.44"
         END
     END
     BLOCK "VarFileInfo"
@@ -284,7 +285,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 192
         TOPMARGIN, 7
-        BOTTOMMARGIN, 237
+        BOTTOMMARGIN, 257
     END
 
     IDD_SNOOZE_DIALOG, DIALOG
@@ -501,8 +502,8 @@ PAYPALF                 BITMAP                  "res\\paypalfocus.bmp"
 
 STRINGTABLE 
 BEGIN
-    IDR_MAINFRAME           "iTunesAlarm"
-    IDS_INCREASE_TIP        "This increases iTunes' volume from 0% to 100% in the specified number of seconds."
+    IDR_MAINFRAME           "iSnooze"
+    IDS_INCREASE_TIP        "This increases iTunes' volume from 30% to 100% in the specified number of seconds."
     IDS_MINIMIZE_TIP        "Minimize iTunes when alarm goes off to reduce chances of bleary-eyed Stop-hitting"
     IDS_PAUSE_TIP           "Temporarily pauses iTunes, allowing you to snooze/stop in silence.  Unpauses after 10 seconds of inactivity."
     IDS_ADD_TIP             "Add a new alarm"
@@ -512,7 +513,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    AFX_IDS_APP_TITLE       "iTunesAlarm"
+    AFX_IDS_APP_TITLE       "iSnooze"
     AFX_IDS_IDLEMESSAGE     "Ready"
 END
 

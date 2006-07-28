@@ -2,20 +2,20 @@
 //
 // Copyright (c) 2004, Steven Scott (progoth@gmail.com)
 //
-// This file is part of iTunesAlarm.
+// This file is part of iSnooze.
 //
-// iTunesAlarm is free software; you can redistribute it and/or modify
+// iSnooze is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 //
-// iTunesAlarm is distributed in the hope that it will be useful,
+// iSnooze is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with iTunesAlarm; if not, write to the Free Software
+// along with iSnooze; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "stdafx.h"
@@ -164,7 +164,7 @@ void CConfigDlg::LoadFromReg()
     CButton *runatstartup = (CButton*)GetDlgItem( IDC_STARTUP_CHECK );
     RegMap t(HKEY_CURRENT_USER);
     t = t[_T("Software")][_T("Microsoft")][_T("Windows")][_T("CurrentVersion")][_T("Run")];
-    runatstartup->SetCheck( ((t.has_key(_T("iTunesAlarm")))?BST_CHECKED:BST_UNCHECKED) );
+    runatstartup->SetCheck( ((t.has_key(_T("iSnooze")))?BST_CHECKED:BST_UNCHECKED) );
 
     long st = 0xff & (long)m_reg[_T("SnoozeTime")];
     if( st < 1 ) st = 1; if( st > 60 ) st = 60;
@@ -202,6 +202,7 @@ void CConfigDlg::SetDlgTimeFromTAD( const DayTime::TimeAndDays &in )
 	((CButton*)GetDlgItem(IDC_THURSDAY_CHECK))->SetCheck( ((in.day & DayTime::THURSDAY)?BST_CHECKED:BST_UNCHECKED) );
 	((CButton*)GetDlgItem(IDC_FRIDAY_CHECK))->SetCheck( ((in.day & DayTime::FRIDAY)?BST_CHECKED:BST_UNCHECKED) );
 	((CButton*)GetDlgItem(IDC_SATURDAY_CHECK))->SetCheck( ((in.day & DayTime::SATURDAY)?BST_CHECKED:BST_UNCHECKED) );
+	((CButton*)GetDlgItem(IDC_SINGLE_ENABLE))->SetCheck( ((in.day & DayTime::ALARM_ENABLED)?BST_CHECKED:BST_UNCHECKED) );
 }
 
 void CConfigDlg::SaveTimeToReg()
@@ -227,6 +228,7 @@ void CConfigDlg::GetTADFromDlgTime( DayTime::TimeAndDays &out )
 	if( ((CButton*)GetDlgItem(IDC_THURSDAY_CHECK))->GetCheck() == BST_CHECKED ) out.day |= DayTime::THURSDAY;
 	if( ((CButton*)GetDlgItem(IDC_FRIDAY_CHECK))->GetCheck() == BST_CHECKED ) out.day |= DayTime::FRIDAY;
 	if( ((CButton*)GetDlgItem(IDC_SATURDAY_CHECK))->GetCheck() == BST_CHECKED ) out.day |= DayTime::SATURDAY;
+	if( ((CButton*)GetDlgItem(IDC_SINGLE_ENABLE))->GetCheck() == BST_CHECKED ) out.day |= DayTime::ALARM_ENABLED;
 }
 
 void CConfigDlg::SelectPlaylist()
@@ -300,6 +302,7 @@ BEGIN_MESSAGE_MAP(CConfigDlg, CDialog)
 	ON_BN_CLICKED(IDC_THURSDAY_CHECK, OnBnClickedThursdayCheck)
 	ON_BN_CLICKED(IDC_FRIDAY_CHECK, OnBnClickedFridayCheck)
 	ON_BN_CLICKED(IDC_SATURDAY_CHECK, OnBnClickedSaturdayCheck)
+	ON_BN_CLICKED(IDC_SINGLE_ENABLE, OnBnClickedSingleEnable)
 END_MESSAGE_MAP()
 
 // CConfigDlg message handlers
@@ -372,12 +375,12 @@ void CConfigDlg::OnBnClickedOk()
     {
         TCHAR f[MAX_PATH];
         GetModuleFileName( NULL, f, MAX_PATH );
-        t[_T("iTunesAlarm")] = f;
+        t[_T("iSnooze")] = f;
     }
     else
     {
-        if( t.has_key( _T("iTunesAlarm") ) )
-            t.deleteValue( _T("iTunesAlarm") );
+        if( t.has_key( _T("iSnooze") ) )
+            t.deleteValue( _T("iSnooze") );
     }
 
     m_reg[_T("BeenRun")] = true;
@@ -526,4 +529,9 @@ void CConfigDlg::OnBnClickedFridayCheck()
 void CConfigDlg::OnBnClickedSaturdayCheck()
 {
 	DoDayCheck( IDC_SATURDAY_CHECK, DayTime::SATURDAY );
+}
+
+void CConfigDlg::OnBnClickedSingleEnable()
+{
+	DoDayCheck( IDC_SINGLE_ENABLE, DayTime::ALARM_ENABLED );
 }

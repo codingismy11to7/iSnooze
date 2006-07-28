@@ -1,19 +1,19 @@
 // Copyright (c) 2004, Steven Scott (progoth@gmail.com)
 //
-// This file is part of iTunesAlarm.
+// This file is part of iSnooze.
 //
-// iTunesAlarm is free software; you can redistribute it and/or modify
+// iSnooze is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 //
-// iTunesAlarm is distributed in the hope that it will be useful,
+// iSnooze is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with iTunesAlarm; if not, write to the Free Software
+// along with iSnooze; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 //#pragma once
@@ -37,6 +37,8 @@ namespace DayTime {
 	const unsigned char ALL_DAYS  = 127;
 	const unsigned char WEEKDAYS  = 62;
 
+	const unsigned char ALARM_ENABLED = 128;
+
 	const unsigned char Win2DayTime[] = {SUNDAY,MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY};
 
 	extern const TCHAR *DayNames[7];
@@ -44,9 +46,9 @@ namespace DayTime {
 	class TimeAndDays
 	{
 	public:
-		TimeAndDays():time(0), day(0){}
-		TimeAndDays( int hour, int minute, BYTE days );
-		TimeAndDays( const SYSTEMTIME &st );
+		TimeAndDays():time(0), day(ALARM_ENABLED){}
+		TimeAndDays( int hour, int minute, BYTE days, bool enabled = true );
+		TimeAndDays( const SYSTEMTIME &st, bool enabled = true );
 
 		void setTime( int hour, int minute );
 
@@ -60,13 +62,13 @@ namespace DayTime {
 		void getToBinary( BYTE *data ) const
 		{
 			((unsigned short*)data)[0] = 0x07ff & time;
-			((unsigned char*)data)[2]  =   0x7f &  day;
+			((unsigned char*)data)[2]  = day;
 		}
 
 		void setFromBinary( const char *data )
 		{
 			time = 0x07ff & ((unsigned short*)data)[0];
-			day  =   0x7f & ((unsigned char*)data)[2];
+			day  = ((unsigned char*)data)[2];
 		}
 
 		bool isIncluded( const SYSTEMTIME &o ) const
@@ -74,6 +76,19 @@ namespace DayTime {
 			if( !( day & Win2DayTime[o.wDayOfWeek] ) ) return false;
 			int hour, minute; getTime( hour, minute );
 			return ( (minute == o.wMinute) && (hour == o.wHour) );
+		}
+
+		bool isEnabled() const
+		{
+			return (day & ALARM_ENABLED) != 0;
+		}
+
+		void isEnabled( bool e )
+		{
+			if( e )
+				day |= ALARM_ENABLED;
+			else
+				day &= ~ALARM_ENABLED;
 		}
 
 		tstring getString() const;
