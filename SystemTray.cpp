@@ -26,6 +26,7 @@
 //
 // Written by Chris Maunder (cmaunder@mail.com)
 // Copyright (c) 1998-2003.
+// http://www.codeproject.com/shell/systemtray.asp?df=100
 //
 // Updated: 25 Jul 1998 - Added icon animation, and derived class
 //                        from CWnd in order to handle messages. (CJM)
@@ -52,26 +53,32 @@
 // Updated: 4 Aug 2003 - Fixed bug that was stopping icon from being recreated when
 //                       Explorer crashed
 //                       Fixed resource leak in SetIcon
-//						 Animate() now checks for empty icon list - Anton Treskunov
-//						 Added the virutal CustomizeMenu() method - Anton Treskunov
+//			 Animate() now checks for empty icon list - Anton Treskunov
+//			 Added the virutal CustomizeMenu() method - Anton Treskunov
 //                       
-//
-// This code may be used in compiled form in any way you desire. This
-// file may be redistributed unmodified by any means PROVIDING it is 
-// not sold for profit without the authors written consent, and 
-// providing that this notice and the authors name is included. If 
-// the source code in  this file is used in any commercial application 
-// then acknowledgement must be made to the author of this file 
-// (in whatever form you wish).
-//
-// This file is provided "as is" with no expressed or implied warranty.
-// The author accepts no liability for any damage caused through use.
-//
-// Expect bugs.
 // 
-// Please use and enjoy. Please let me know of any bugs/mods/improvements 
-// that you have found/implemented and I will fix/incorporate them into this
-// file. 
+// Additional code by Steven Scott (progoth@gmail.com)
+// Copyright (c) 2004
+//
+// This file with my changes is licensed under the GPL, see
+// above link for the original.
+//
+//
+// This file is part of iTunesAlarm.
+//
+// iTunesAlarm is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// iTunesAlarm is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with iTunesAlarm; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 /////////////////////////////////////////////////////////////////////////////
     
@@ -87,6 +94,7 @@
 #endif
 
 #include <shellapi.h>
+#include ".\systemtray.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -226,6 +234,8 @@ BOOL CSystemTray::Create(CWnd* pParent, UINT uCallbackMessage, LPCTSTR szToolTip
     m_tnd.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP;
     m_tnd.uCallbackMessage = uCallbackMessage;
     _tcsncpy(m_tnd.szTip, szToolTip, m_nMaxTooltipLength-1);
+
+	m_menu.LoadMenu( uID );
 
 #ifdef SYSTEMTRAY_USEW2K
     if (m_bWin2K && szBalloonTip)
@@ -762,10 +772,10 @@ BOOL CSystemTray::SetMenuDefaultItem(UINT uItem, BOOL bByPos)
 
     CMenu menu, *pSubMenu;
 
-    if (!menu.LoadMenu(m_tnd.uID))
-        return FALSE;
+    //if (!menu.LoadMenu(m_tnd.uID))
+    //    return FALSE;
 
-    pSubMenu = menu.GetSubMenu(0);
+    pSubMenu = m_menu.GetSubMenu(0);
     if (!pSubMenu)
         return FALSE;
 
@@ -861,10 +871,10 @@ LRESULT CSystemTray::OnTrayNotification(UINT wParam, LONG lParam)
     if (LOWORD(lParam) == WM_RBUTTONUP)
 #endif
     {    
-        if (!menu.LoadMenu(m_tnd.uID))
-            return 0;
+        //if (!menu.LoadMenu(m_tnd.uID))
+        //    return 0;
         
-        pSubMenu = menu.GetSubMenu(0);
+        pSubMenu = m_menu.GetSubMenu(0);
         if (!pSubMenu)
             return 0;
 
@@ -1143,4 +1153,13 @@ void CSystemTray::MaximiseFromTray(CWnd* pWnd, BOOL bForceAnimation /*= TRUE*/)
     pWnd->SetActiveWindow();
     pWnd->SetForegroundWindow();
 #endif
+}
+
+UINT CSystemTray::GetMenuItemChecked(UINT nIDCheckItem, UINT nCheck )
+{
+	UINT bycmd = nCheck & ~MF_CHECKED;
+	bycmd &= ~MF_UNCHECKED;
+	UINT ret = CheckMenuItem( nIDCheckItem, bycmd | MF_UNCHECKED );
+	CheckMenuItem( nIDCheckItem, bycmd | ret );
+	return ret;
 }

@@ -1,5 +1,22 @@
 // ConfigDlg.cpp : implementation file
 //
+// Copyright (c) 2004, Steven Scott (progoth@gmail.com)
+//
+// This file is part of iTunesAlarm.
+//
+// iTunesAlarm is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// iTunesAlarm is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with iTunesAlarm; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "stdafx.h"
 #include "iTunesAlarm.h"
@@ -28,6 +45,9 @@ BOOL CConfigDlg::OnInitDialog()
 
     tip.LoadString( IDS_MINIMIZE_TIP );
     m_minimize.SetToolTipText( &tip );
+
+	tip.LoadString( IDS_PAUSE_TIP );
+	m_muteCheck.SetToolTipText( &tip );
 
     GetPlaylists();
     FillBoxes();
@@ -133,12 +153,13 @@ CConfigDlg::~CConfigDlg()
 
 void CConfigDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CDialog::DoDataExchange(pDX);
-    DDX_Control(pDX, IDC_INCREASE_CHECK, m_increase);
-    DDX_Control(pDX, IDC_SECONDS_SLIDER, m_secondsSlider);
-    DDX_Control(pDX, IDC_MINIMIZE_CHECK, m_minimize);
-    DDX_Control(pDX, IDC_SNOOZE_TIME, m_snoozeTime);
-    DDX_Control(pDX, IDC_SNOOZE_SPIN, m_snoozeSpin);
+	CDialog::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_INCREASE_CHECK, m_increase);
+	DDX_Control(pDX, IDC_SECONDS_SLIDER, m_secondsSlider);
+	DDX_Control(pDX, IDC_MINIMIZE_CHECK, m_minimize);
+	DDX_Control(pDX, IDC_SNOOZE_TIME, m_snoozeTime);
+	DDX_Control(pDX, IDC_SNOOZE_SPIN, m_snoozeSpin);
+	DDX_Control(pDX, IDC_DO_MUTE, m_muteCheck);
 }
 
 

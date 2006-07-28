@@ -3,22 +3,32 @@
 //
 // Written by Chris Maunder (cmaunder@mail.com)
 // Copyright (c) 1998.
+// http://www.codeproject.com/shell/systemtray.asp?df=100
 //
-// This code may be used in compiled form in any way you desire. This
-// file may be redistributed unmodified by any means PROVIDING it is 
-// not sold for profit without the authors written consent, and 
-// providing that this notice and the authors name is included. If 
-// the source code in  this file is used in any commercial application 
-// then acknowledgement must be made to the author of this file 
-// (in whatever form you wish).
+// Additional code by Steven Scott (progoth@gmail.com)
+// Copyright (c) 2004
 //
-// This file is provided "as is" with no expressed or implied warranty.
+// This file with my changes is licensed under the GPL, see
+// above link for the original.
 //
-// Expect bugs.
-// 
-// Please use and enjoy. Please let me know of any bugs/mods/improvements 
-// that you have found/implemented and I will fix/incorporate them into this
-// file. 
+//
+// This file is part of iTunesAlarm.
+//
+// iTunesAlarm is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// iTunesAlarm is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with iTunesAlarm; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
+/////////////////////////////////////////////////////////////////////////////
 
 #ifndef _INCLUDED_SYSTEMTRAY_H_
 #define _INCLUDED_SYSTEMTRAY_H_
@@ -64,6 +74,10 @@ public:
     BOOL    SetTooltipText(LPCTSTR pszTooltipText);
     BOOL    SetTooltipText(UINT nID);
     CString GetTooltipText() const;
+
+	UINT CheckMenuItem( UINT nIDCheckItem, UINT nCheck )
+	{ return m_menu.CheckMenuItem( nIDCheckItem, nCheck ); }
+	UINT GetMenuItemChecked( UINT nIDCheckItem, UINT nCheck = 0 );
 
     // Change or retrieve the icon displayed
     BOOL  SetIcon(HICON hIcon);
@@ -140,6 +154,8 @@ protected:
     BOOL            m_bShowIconPending; // Show the icon once tha taskbar has been created
     BOOL            m_bWin2K;           // Use new W2K features?
 	CWnd*           m_pTargetWnd;       // Window that menu commands are sent
+
+	CMenu m_menu;
 
     CArray<HICON, HICON> m_IconList;
     UINT_PTR     m_uIDTimer;

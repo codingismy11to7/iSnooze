@@ -11,6 +11,7 @@
 #define IDS_MINIMIZE_TIP                130
 #define IDD_DIALOG1                     131
 #define IDD_CONFIG_DIALOG               131
+#define IDS_PAUSE_TIP                   131
 #define IDR_RT_MANIFEST1                132
 #define IDD_SNOOZE_DIALOG               136
 #define IDC_CHECK1                      1000
@@ -36,13 +37,15 @@
 #define ID_APP_CONFIGURE                32774
 #define ID_POOP_TESTBUBBLE              32775
 #define ID_APP_TESTLAUNCH               32777
+#define ID_POOP_TITLE                   32780
+#define ID_APP_ALARMENABLED             32781
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        139
-#define _APS_NEXT_COMMAND_VALUE         32778
+#define _APS_NEXT_COMMAND_VALUE         32782
 #define _APS_NEXT_CONTROL_VALUE         1023
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
