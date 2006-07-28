@@ -21,6 +21,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CLOSE()
 	ON_WM_CANCELMODE()
 	ON_COMMAND(ID_APP_CONFIGURE, OnAppConfigure)
+	ON_COMMAND(ID_POOP_TESTBUBBLE, OnPoopTestbubble)
 END_MESSAGE_MAP()
 
 
@@ -100,7 +101,7 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParent
 void CMainFrame::StartTray()
 {
 	HICON ico = ::LoadIcon( AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME) );
-	m_systray.Create( this, WM_ICON_NOTIFY, _T("tip"), ico, IDR_POPUP_MENU );
+	m_systray.Create( this, WM_ICON_NOTIFY, _T("iTooonz Alaaarrrm!!"), ico, IDR_POPUP_MENU );
 }
 
 void CMainFrame::OnFileClose()
@@ -127,7 +128,7 @@ void CMainFrame::OnClose()
 LRESULT CMainFrame::OnTrayNotification(UINT wParam, LONG lParam) 
 {
 	if( LOWORD(lParam) == NIN_BALLOONUSERCLICK )
-		MessageBox( _T("huoet") );
+		MessageBox( _T("This should be a snooze dialog, or stop, or something") );
 	else
 		return m_systray.OnTrayNotification(wParam, lParam);
     return 1;
@@ -151,4 +152,10 @@ void CMainFrame::OnAppConfigure()
 	else
 		MessageBox( _T("not saving") );*/
 	m_config->Show();
+}
+
+void CMainFrame::OnPoopTestbubble()
+{
+	m_systray.ShowBalloon( _T("This is a sample bubble popup thing.  It will most likely be used for snooze handling.  Click me!"),
+		_T("WAKE UP"), NIIF_WARNING, 30 );
 }

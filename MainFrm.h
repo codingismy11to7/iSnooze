@@ -50,6 +50,7 @@ protected:
 public:
 	afx_msg LRESULT OnTrayNotification(UINT wParam, LONG lParam);
 	afx_msg void OnAppConfigure();
+	afx_msg void OnPoopTestbubble();
 };
 
 
