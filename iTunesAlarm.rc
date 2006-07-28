@@ -97,6 +97,7 @@ BEGIN
     POPUP "POOP"
     BEGIN
         MENUITEM "&Configure",                  ID_APP_CONFIGURE
+        MENUITEM "Alarm &Enabled",              ID_APP_ALARMENABLED, CHECKED
         MENUITEM "Test &Bubble",                ID_POOP_TESTBUBBLE
         MENUITEM "Test &Launch",                ID_APP_TESTLAUNCH
         MENUITEM SEPARATOR
@@ -170,7 +171,7 @@ BEGIN
                     20
     CONTROL         "&Enable Snooze",IDC_ENABLE_SNOOZE,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,15,141,63,10
-    CONTROL         "Mute on Computer\n&Access",IDC_DO_MUTE,"Button",
+    CONTROL         "Pause on \nComputer &Access",IDC_DO_MUTE,"Button",
                     BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,107,138,73,
                     16
     LTEXT           "S&nooze Time:",IDC_SNOOZE_LABEL,45,166,46,8,0,
@@ -469,6 +470,7 @@ BEGIN
     IDR_MAINFRAME           "iTunesAlarm"
     IDS_INCREASE_TIP        "This increases iTunes' volume from 0% to 100% in the specified number of seconds."
     IDS_MINIMIZE_TIP        "Minimize iTunes when alarm goes off to reduce chances of bleary-eyed Stop-hitting"
+    IDS_PAUSE_TIP           "Temporarily pauses iTunes, allowing you to snooze/stop in silence.  Unpauses after 10 seconds of inactivity."
 END
 
 STRINGTABLE 

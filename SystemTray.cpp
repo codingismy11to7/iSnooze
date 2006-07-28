@@ -87,6 +87,7 @@
 #endif
 
 #include <shellapi.h>
+#include ".\systemtray.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -226,6 +227,8 @@ BOOL CSystemTray::Create(CWnd* pParent, UINT uCallbackMessage, LPCTSTR szToolTip
     m_tnd.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP;
     m_tnd.uCallbackMessage = uCallbackMessage;
     _tcsncpy(m_tnd.szTip, szToolTip, m_nMaxTooltipLength-1);
+
+	m_menu.LoadMenu( uID );
 
 #ifdef SYSTEMTRAY_USEW2K
     if (m_bWin2K && szBalloonTip)
@@ -762,10 +765,10 @@ BOOL CSystemTray::SetMenuDefaultItem(UINT uItem, BOOL bByPos)
 
     CMenu menu, *pSubMenu;
 
-    if (!menu.LoadMenu(m_tnd.uID))
-        return FALSE;
+    //if (!menu.LoadMenu(m_tnd.uID))
+    //    return FALSE;
 
-    pSubMenu = menu.GetSubMenu(0);
+    pSubMenu = m_menu.GetSubMenu(0);
     if (!pSubMenu)
         return FALSE;
 
@@ -861,10 +864,10 @@ LRESULT CSystemTray::OnTrayNotification(UINT wParam, LONG lParam)
     if (LOWORD(lParam) == WM_RBUTTONUP)
 #endif
     {    
-        if (!menu.LoadMenu(m_tnd.uID))
-            return 0;
+        //if (!menu.LoadMenu(m_tnd.uID))
+        //    return 0;
         
-        pSubMenu = menu.GetSubMenu(0);
+        pSubMenu = m_menu.GetSubMenu(0);
         if (!pSubMenu)
             return 0;
 
@@ -1143,4 +1146,13 @@ void CSystemTray::MaximiseFromTray(CWnd* pWnd, BOOL bForceAnimation /*= TRUE*/)
     pWnd->SetActiveWindow();
     pWnd->SetForegroundWindow();
 #endif
+}
+
+UINT CSystemTray::GetMenuItemChecked(UINT nIDCheckItem, UINT nCheck )
+{
+	UINT bycmd = nCheck & ~MF_CHECKED;
+	bycmd &= ~MF_UNCHECKED;
+	UINT ret = CheckMenuItem( nIDCheckItem, bycmd | MF_UNCHECKED );
+	CheckMenuItem( nIDCheckItem, bycmd | ret );
+	return ret;
 }

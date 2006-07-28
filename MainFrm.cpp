@@ -29,6 +29,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_COMMAND(ID_APP_CONFIGURE, OnAppConfigure)
 	ON_COMMAND(ID_POOP_TESTBUBBLE, OnPoopTestbubble)
     ON_COMMAND(ID_APP_TESTLAUNCH, OnTestLaunch)
+	ON_COMMAND(ID_APP_ALARMENABLED, OnAlarmEnabled)
 END_MESSAGE_MAP()
 
 DWORD WINAPI TimerThread( LPVOID param )
@@ -55,7 +56,7 @@ DWORD WINAPI VolumeThread( LPVOID param )
 	CMainFrame *caller = (CMainFrame*)param;
     int begin = 0;
     int end = 100;
-    int increaseStep = 5;
+    int increaseStep = 1;
 	int wait = (increaseStep * 1000 * caller->getVolumeLength()) / (end - begin);
 	for( int i = 0; (i < (end-begin)) && (caller->increasingVolume() != VI_NOOP); i+=increaseStep )
 	{
@@ -118,7 +119,7 @@ DWORD WINAPI CheckForAway( LPVOID param )
 // CMainFrame construction/destruction
 
 CMainFrame::CMainFrame()
-: m_config(NULL)
+: m_config(NULL), m_snoozing(false)
 {
 	m_reg = RegMap( HKEY_CURRENT_USER )[_T("Software")];
 	if( !m_reg.has_key( _T("iTunesAlarm") ) )
@@ -143,7 +144,8 @@ void CMainFrame::timeCheck()
     if( (!m_snoozing && time.wHour == m_hour && time.wMinute == m_minute)
         || (time.wHour == m_thour && time.wMinute == m_tminute ) )
     {
-		PostMessage( WM_DO_ALARM, 0, 0 );
+		if( m_alarmEnabled )
+			PostMessage( WM_DO_ALARM, 0, 0 );
     }
 }
 
@@ -208,9 +210,9 @@ void CMainFrame::closeITI()
 
 LRESULT CMainFrame::DoAlarm(UINT wParam, LONG lParam)
 {
-    bool y = ( m_mainThread == GetCurrentThreadId() );
-    m_systray.ShowBalloon( _T("Starting alarm, we'll see what this will do later."),
-        _T("DANGER DANGER"), NIIF_WARNING, 30 );
+    //bool y = ( m_mainThread == GetCurrentThreadId() );
+    //m_systray.ShowBalloon( _T("Starting alarm, we'll see what this will do later."),
+    //    _T("DANGER DANGER"), NIIF_WARNING, 30 );
     try
     {
         if( m_increase )
@@ -254,6 +256,7 @@ LRESULT CMainFrame::DoAlarm(UINT wParam, LONG lParam)
                 if( m_thour > 23 ) m_thour = 0;
                 m_tminute-= 60;
             }
+			SetToolTip();
         }
         else // stop
         {
@@ -263,6 +266,7 @@ LRESULT CMainFrame::DoAlarm(UINT wParam, LONG lParam)
             ITI::Disconnect();
             m_volumeIncreasing = VI_NOOP;
             m_snoozing = false;
+			SetToolTip();
         }
     }
     catch( trterror &e )
@@ -311,6 +315,8 @@ void CMainFrame::InitReg()
         m_reg[_T("SnoozeTime")] = 7L;
     if( !m_reg.has_key( _T("MuteOnReturn") ) )
         m_reg[_T("MuteOnReturn")] = true;
+	if( !m_reg.has_key( _T("AlarmEnabled") ) )
+		m_reg[_T("AlarmEnabled")] = true;
 
     RegMap t( HKEY_CURRENT_USER );
     t = t[_T("Software")][_T("Microsoft")][_T("Windows")][_T("CurrentVersion")];
@@ -332,8 +338,27 @@ void CMainFrame::LoadReg()
     m_snoozeTime = (unsigned char)(0xff & (long)m_reg[_T("SnoozeTime")]);
     m_muteOnRet = m_reg[_T("MuteOnReturn")];
 
-	static TCHAR buf[200];
-	_stprintf( buf, _T("iTooonz Alaaarrrm!!\nAlarm Set for %d:%02d"), m_hour, m_minute );
+	m_alarmEnabled = m_reg[_T("AlarmEnabled")];
+	if( m_alarmEnabled )
+		m_systray.CheckMenuItem( ID_APP_ALARMENABLED, MF_CHECKED );
+	else
+		m_systray.CheckMenuItem( ID_APP_ALARMENABLED, MF_UNCHECKED );
+
+	SetToolTip();
+}
+
+void CMainFrame::SetToolTip()
+{
+	static TCHAR buf[1024];
+	if( m_alarmEnabled )
+	{
+		if( m_snoozing )
+			_stprintf( buf, _T("iTooonz Alaaarrrm!!\nSnoozing until %d:%02d"), m_thour, m_tminute );
+		else
+			_stprintf( buf, _T("iTooonz Alaaarrrm!!\nAlarm Set for %d:%02d"), m_hour, m_minute );
+	}
+	else
+		_tcscpy( buf, _T("iTooonz Alaaarrrm!!\nAlarm disabled") );
 	m_systray.SetTooltipText( buf );
 }
 
@@ -381,6 +406,8 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParent
 
 void CMainFrame::StartTray()
 {
+	//m_systrayMenu.LoadMenu( IDR_POPUP_MENU );
+
 	HICON ico = ::LoadIcon( AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME) );
 	m_systray.Create( this, WM_ICON_NOTIFY, _T("iTooonz Alaaarrrm!!"), ico, IDR_POPUP_MENU );
 
@@ -450,4 +477,19 @@ void CMainFrame::OnPoopTestbubble()
 void CMainFrame::OnTestLaunch()
 {
     DoAlarm(0,0);
+}
+
+void CMainFrame::OnAlarmEnabled()
+{
+	if( m_systray.GetMenuItemChecked( ID_APP_ALARMENABLED ) == MF_CHECKED )
+	{
+		m_reg[_T("AlarmEnabled")] = m_alarmEnabled = false;
+		m_systray.CheckMenuItem( ID_APP_ALARMENABLED, MF_UNCHECKED );
+	}
+	else
+	{
+		m_reg[_T("AlarmEnabled")] = m_alarmEnabled = true;
+		m_systray.CheckMenuItem( ID_APP_ALARMENABLED, MF_CHECKED );
+	}
+	SetToolTip();
 }

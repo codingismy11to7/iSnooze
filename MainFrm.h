@@ -6,6 +6,7 @@
 #include "ChildView.h"
 #include "SystemTray.h"
 #include "ConfigDlg.h"
+#include "TitledPopupMenu.h"
 
 #define WM_ICON_NOTIFY  WM_APP+10
 #define WM_CONFIG_UPDATE WM_APP+11
@@ -78,13 +79,15 @@ protected:
 	int m_inclength;
     VolumeIncreaseState m_volumeIncreasing;
     bool m_muteOnRet;
-
     bool m_snoozeDlgOpen;
+
+	bool m_alarmEnabled;
 
     DWORD m_mainThread;
 
     void LoadReg();
 	void InitReg();
+	void SetToolTip();
 
 	afx_msg void OnFileClose();
 	afx_msg void OnClose();
@@ -99,6 +102,7 @@ public:
 	afx_msg void OnAppConfigure();
 	afx_msg void OnPoopTestbubble();
     afx_msg void OnTestLaunch();
+	afx_msg void OnAlarmEnabled();
 };
 
 

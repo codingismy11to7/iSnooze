@@ -55,4 +55,6 @@ protected:
     CSpinButtonCtrl m_snoozeSpin;
 public:
     afx_msg void OnBnClickedEnableSnooze();
+protected:
+	CToolTipButton m_muteCheck;
 };

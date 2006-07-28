@@ -65,6 +65,10 @@ public:
     BOOL    SetTooltipText(UINT nID);
     CString GetTooltipText() const;
 
+	UINT CheckMenuItem( UINT nIDCheckItem, UINT nCheck )
+	{ return m_menu.CheckMenuItem( nIDCheckItem, nCheck ); }
+	UINT GetMenuItemChecked( UINT nIDCheckItem, UINT nCheck = 0 );
+
     // Change or retrieve the icon displayed
     BOOL  SetIcon(HICON hIcon);
     BOOL  SetIcon(LPCTSTR lpszIconName);
@@ -140,6 +144,8 @@ protected:
     BOOL            m_bShowIconPending; // Show the icon once tha taskbar has been created
     BOOL            m_bWin2K;           // Use new W2K features?
 	CWnd*           m_pTargetWnd;       // Window that menu commands are sent
+
+	CMenu m_menu;
 
     CArray<HICON, HICON> m_IconList;
     UINT_PTR     m_uIDTimer;

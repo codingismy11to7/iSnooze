@@ -29,6 +29,9 @@ BOOL CConfigDlg::OnInitDialog()
     tip.LoadString( IDS_MINIMIZE_TIP );
     m_minimize.SetToolTipText( &tip );
 
+	tip.LoadString( IDS_PAUSE_TIP );
+	m_muteCheck.SetToolTipText( &tip );
+
     GetPlaylists();
     FillBoxes();
 
@@ -133,12 +136,13 @@ CConfigDlg::~CConfigDlg()
 
 void CConfigDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CDialog::DoDataExchange(pDX);
-    DDX_Control(pDX, IDC_INCREASE_CHECK, m_increase);
-    DDX_Control(pDX, IDC_SECONDS_SLIDER, m_secondsSlider);
-    DDX_Control(pDX, IDC_MINIMIZE_CHECK, m_minimize);
-    DDX_Control(pDX, IDC_SNOOZE_TIME, m_snoozeTime);
-    DDX_Control(pDX, IDC_SNOOZE_SPIN, m_snoozeSpin);
+	CDialog::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_INCREASE_CHECK, m_increase);
+	DDX_Control(pDX, IDC_SECONDS_SLIDER, m_secondsSlider);
+	DDX_Control(pDX, IDC_MINIMIZE_CHECK, m_minimize);
+	DDX_Control(pDX, IDC_SNOOZE_TIME, m_snoozeTime);
+	DDX_Control(pDX, IDC_SNOOZE_SPIN, m_snoozeSpin);
+	DDX_Control(pDX, IDC_DO_MUTE, m_muteCheck);
 }
 
 
