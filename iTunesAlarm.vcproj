@@ -125,6 +125,9 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
+				RelativePath=".\AboutDlg.cpp">
+			</File>
+			<File
 				RelativePath=".\ChildView.cpp">
 			</File>
 			<File
@@ -197,6 +200,9 @@
 				RelativePath=".\SystemTray.cpp">
 			</File>
 			<File
+				RelativePath=".\ToolTipBitmapButton.cpp">
+			</File>
+			<File
 				RelativePath=".\ToolTipButton.cpp">
 			</File>
 		</Filter>
@@ -204,6 +210,9 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+			<File
+				RelativePath=".\AboutDlg.h">
+			</File>
 			<File
 				RelativePath=".\ChildView.h">
 			</File>
@@ -250,6 +259,9 @@
 				RelativePath=".\t.h">
 			</File>
 			<File
+				RelativePath=".\ToolTipBitmapButton.h">
+			</File>
+			<File
 				RelativePath=".\ToolTipButton.h">
 			</File>
 			<File
@@ -264,6 +276,9 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 			<File
+				RelativePath=".\res\bitmap2.bmp">
+			</File>
+			<File
 				RelativePath=".\res\iTunesAlarm.ico">
 			</File>
 			<File
@@ -271,6 +286,18 @@
 			</File>
 			<File
 				RelativePath=".\res\iTunesAlarm.rc2">
+			</File>
+			<File
+				RelativePath=".\res\paypaldis.bmp">
+			</File>
+			<File
+				RelativePath=".\res\paypaldown.bmp">
+			</File>
+			<File
+				RelativePath=".\res\paypalfocus.bmp">
+			</File>
+			<File
+				RelativePath=".\res\paypalup.bmp">
 			</File>
 		</Filter>
 		<File

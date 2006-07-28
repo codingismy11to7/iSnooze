@@ -20,7 +20,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "iTunesAlarm"
-!define PRODUCT_VERSION "1.1"
+!define PRODUCT_VERSION "1.2"
 !define PRODUCT_PUBLISHER "Steven Scott"
 !define PRODUCT_WEB_SITE "http://www.progoth.com"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\iTunesAlarm.exe"
@@ -70,7 +70,7 @@ var ICONS_GROUP
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "SetupiTunesAlarm.exe"
+OutFile "Setup${PRODUCT_NAME}-${PRODUCT_VERSION}.exe"
 InstallDir "$PROGRAMFILES\iTunesAlarm"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show

@@ -15,6 +15,7 @@
 #define IDR_RT_MANIFEST1                132
 #define IDS_ADD_TIP                     132
 #define IDS_DELETE_TIP                  133
+#define IDS_PAYPAL_TIP                  134
 #define IDD_SNOOZE_DIALOG               136
 #define IDC_CHECK1                      1000
 #define IDC_CHECK_SHUFFLE               1000
@@ -48,6 +49,7 @@
 #define IDC_TIME_LABEL                  1032
 #define IDC_COLON_LABEL                 1033
 #define IDC_DAYS_GROUP                  1034
+#define IDC_PAYPAL                      1035
 #define ID_POOP_TEST                    32773
 #define ID_APP_CONFIGURE                32774
 #define ID_POOP_TESTBUBBLE              32775
@@ -59,9 +61,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        139
-#define _APS_NEXT_COMMAND_VALUE         32782
-#define _APS_NEXT_CONTROL_VALUE         1035
+#define _APS_NEXT_RESOURCE_VALUE        143
+#define _APS_NEXT_COMMAND_VALUE         32783
+#define _APS_NEXT_CONTROL_VALUE         1036
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

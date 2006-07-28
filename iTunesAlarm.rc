@@ -100,6 +100,7 @@ BEGIN
         MENUITEM "Alarm &Enabled",              ID_APP_ALARMENABLED, CHECKED
         MENUITEM "Test &Launch",                ID_APP_TESTLAUNCH
         MENUITEM SEPARATOR
+        MENUITEM "&About",                      ID_APP_ABOUT
         MENUITEM "E&xit",                       ID_APP_EXIT
     END
 END
@@ -137,10 +138,13 @@ CAPTION "About iTunesAlarm"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
-    LTEXT           "iTunesAlarm Version 1.0",IDC_STATIC,40,10,119,8,
+    LTEXT           "iTunesAlarm Version 1.2",IDC_STATIC,40,10,119,8,
                     SS_NOPREFIX
-    LTEXT           "Copyright (C) 2004",IDC_STATIC,40,25,119,8
+    LTEXT           "Copyright (C) Steven Scott, 2004",IDC_STATIC,40,25,119,
+                    8
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
+    CONTROL         "PAYPAL",IDC_PAYPAL,"Button",BS_OWNERDRAW | BS_BITMAP | 
+                    WS_TABSTOP,182,25,41,19
 END
 
 IDD_CONFIG_DIALOG DIALOGEX 0, 0, 199, 244
@@ -480,6 +484,16 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// Bitmap
+//
+
+PAYPALU                 BITMAP                  "res\\paypalup.bmp"
+PAYPALD                 BITMAP                  "res\\paypaldown.bmp"
+PAYPALX                 BITMAP                  "res\\paypaldis.bmp"
+PAYPALF                 BITMAP                  "res\\paypalfocus.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
 
@@ -491,6 +505,7 @@ BEGIN
     IDS_PAUSE_TIP           "Temporarily pauses iTunes, allowing you to snooze/stop in silence.  Unpauses after 10 seconds of inactivity."
     IDS_ADD_TIP             "Add a new alarm"
     IDS_DELETE_TIP          "Delete this alarm"
+    IDS_PAYPAL_TIP          "Click here if you would care to donate some monies!"
 END
 
 STRINGTABLE 
