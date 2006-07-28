@@ -23,6 +23,7 @@
 #include "ToolTipButton.h"
 #include "afxwin.h"
 #include "afxcmn.h"
+#include "groupcontrol.h"
 
 // CConfigDlg dialog
 
@@ -77,4 +78,10 @@ public:
     afx_msg void OnBnClickedEnableSnooze();
 protected:
 	CToolTipButton m_muteCheck;
+	CToolTipButton m_addButton;
+	CToolTipButton m_deleteButton;
+public:
+	afx_msg void OnBnClickedDelete();
+protected:
+	CGroupControl m_daysBox;
 };

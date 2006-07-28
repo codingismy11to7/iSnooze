@@ -98,7 +98,6 @@ BEGIN
     BEGIN
         MENUITEM "&Configure",                  ID_APP_CONFIGURE
         MENUITEM "Alarm &Enabled",              ID_APP_ALARMENABLED, CHECKED
-        MENUITEM "Test &Bubble",                ID_POOP_TESTBUBBLE
         MENUITEM "Test &Launch",                ID_APP_TESTLAUNCH
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
@@ -147,31 +146,35 @@ END
 IDD_CONFIG_DIALOG DIALOGEX 0, 0, 199, 244
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
-CAPTION "Configure"
+CAPTION "Configure Alarms"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Time: ",IDC_STATIC,22,18,20,8
-    COMBOBOX        IDC_HOURS,50,16,27,94,CBS_DROPDOWNLIST | WS_VSCROLL | 
+    COMBOBOX        IDC_ALARM_COMBO,12,10,122,62,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "A&dd",IDC_ADD,22,26,44,13
+    PUSHBUTTON      "De&lete",IDC_DELETE,77,26,46,13
+    LTEXT           "&Time: ",IDC_TIME_LABEL,29,53,20,8,0,WS_EX_RIGHT
+    COMBOBOX        IDC_HOURS,49,51,27,94,CBS_DROPDOWNLIST | WS_VSCROLL | 
                     WS_TABSTOP
-    COMBOBOX        IDC_MINS,81,16,27,94,CBS_DROPDOWNLIST | WS_VSCROLL | 
+    COMBOBOX        IDC_MINS,80,51,27,94,CBS_DROPDOWNLIST | WS_VSCROLL | 
                     WS_TABSTOP
-    CONTROL         ":",IDC_STATIC,"Static",SS_SIMPLE | WS_GROUP,78,17,8,8,
-                    WS_EX_TRANSPARENT
-    GROUPBOX        "&Days",IDC_STATIC,16,42,168,52
+    CONTROL         ":",IDC_COLON_LABEL,"Static",SS_SIMPLE | WS_GROUP,77,53,
+                    8,8,WS_EX_TRANSPARENT
+    GROUPBOX        "Sc&hedule",IDC_DAYS_GROUP,16,41,168,57
     CONTROL         "Sunday",IDC_SUNDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
-                    WS_GROUP | WS_TABSTOP,23,52,40,10
+                    WS_GROUP | WS_TABSTOP,126,51,40,10
     CONTROL         "Monday",IDC_MONDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,80,52,41,10
+                    WS_TABSTOP,22,68,41,10
     CONTROL         "Tuesday",IDC_TUESDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,138,52,43,10
+                    WS_TABSTOP,76,68,43,10
     CONTROL         "Wednesday",IDC_WEDNESDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,23,66,54,10
+                    WS_TABSTOP,126,68,54,10
     CONTROL         "Thursday",IDC_THURSDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,80,66,46,10
+                    WS_TABSTOP,22,85,46,10
     CONTROL         "Friday",IDC_FRIDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,138,66,36,10
+                    WS_TABSTOP,76,85,36,10
     CONTROL         "Saturday",IDC_SATURDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,23,80,45,10
+                    WS_TABSTOP,126,85,45,10
     COMBOBOX        IDC_PLAYLISTS,12,101,175,69,CBS_DROPDOWNLIST | 
                     WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Shuffle Play",IDC_CHECK_SHUFFLE,"Button",
@@ -486,6 +489,8 @@ BEGIN
     IDS_INCREASE_TIP        "This increases iTunes' volume from 0% to 100% in the specified number of seconds."
     IDS_MINIMIZE_TIP        "Minimize iTunes when alarm goes off to reduce chances of bleary-eyed Stop-hitting"
     IDS_PAUSE_TIP           "Temporarily pauses iTunes, allowing you to snooze/stop in silence.  Unpauses after 10 seconds of inactivity."
+    IDS_ADD_TIP             "Add a new alarm"
+    IDS_DELETE_TIP          "Delete this alarm"
 END
 
 STRINGTABLE 

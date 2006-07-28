@@ -131,6 +131,9 @@
 				RelativePath=".\ConfigDlg.cpp">
 			</File>
 			<File
+				RelativePath=".\GroupControl.cpp">
+			</File>
+			<File
 				RelativePath=".\ITI.cpp">
 			</File>
 			<File
@@ -203,6 +206,9 @@
 			</File>
 			<File
 				RelativePath=".\ConfigDlg.h">
+			</File>
+			<File
+				RelativePath=".\GroupControl.h">
 			</File>
 			<File
 				RelativePath=".\ITI.h">

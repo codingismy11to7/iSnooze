@@ -49,6 +49,14 @@ BOOL CConfigDlg::OnInitDialog()
 	tip.LoadString( IDS_PAUSE_TIP );
 	m_muteCheck.SetToolTipText( &tip );
 
+	tip.LoadString( IDS_ADD_TIP );
+	m_addButton.SetToolTipText( &tip );
+
+	tip.LoadString( IDS_DELETE_TIP );
+	m_deleteButton.SetToolTipText( &tip );
+
+	m_daysBox.SetUseTabOrder(TRUE);
+
     GetPlaylists();
     FillBoxes();
 
@@ -211,6 +219,9 @@ void CConfigDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SNOOZE_TIME, m_snoozeTime);
 	DDX_Control(pDX, IDC_SNOOZE_SPIN, m_snoozeSpin);
 	DDX_Control(pDX, IDC_DO_MUTE, m_muteCheck);
+	DDX_Control(pDX, IDC_ADD, m_addButton);
+	DDX_Control(pDX, IDC_DELETE, m_deleteButton);
+	DDX_Control(pDX, IDC_DAYS_GROUP, m_daysBox);
 }
 
 
@@ -220,6 +231,7 @@ BEGIN_MESSAGE_MAP(CConfigDlg, CDialog)
 	ON_NOTIFY(TTN_NEEDTEXT, NULL, OnNeedText)
 	ON_BN_CLICKED(IDC_INCREASE_CHECK, OnBnClickedIncreaseCheck)
     ON_BN_CLICKED(IDC_ENABLE_SNOOZE, OnBnClickedEnableSnooze)
+	ON_BN_CLICKED(IDC_DELETE, OnBnClickedDelete)
 END_MESSAGE_MAP()
 
 //	ON_WM_HSCROLL()
@@ -349,3 +361,8 @@ void CConfigDlg::OnBnClickedEnableSnooze()
     }
 }
 
+
+void CConfigDlg::OnBnClickedDelete()
+{
+	MessageBox( _T("Are you sure you want to delete this alarm?"), _T("Confirm"), MB_ICONQUESTION | MB_YESNO );
+}
