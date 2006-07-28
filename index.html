@@ -4,51 +4,51 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>iSnooze</title>
-<link rel="stylesheet" type="text/css" title="Default" media="screen" href="default.css" />
-<script type="text/javascript" src="site.js"></script>
+<script type="text/javascript" src="js/tabpane.js"></script>
+<script type="text/javascript" src="js/site.js"></script>
+<link rel="stylesheet" href="css/luna/tab.css" />
+<link rel="stylesheet" type="text/css" title="Default" media="screen" href="css/default.css" />
 </head>
 
 <body>
-<h1><img src="files/isnoozeicon.gif" alt="iSnooze icon" class="icon" />iSnooze</h1>
-<div style="clear:both;">&nbsp;</div>
+<h1><img src="files/isnoozeicon.gif" alt="iSnooze icon" class="icon" /> &nbsp;iSnooze</h1>
+<!-- <div style="clear:both;">&nbsp;</div> -->
 
-<h2 onclick="toggle_section('about');">About iSnooze</h2>
-<div style="clear:both;"></div>
-<div id="about">
+<div class="tab-pane" style="width:700px;height:400px;">
+
+<div id="about" class="tab-page">
+<h2 class="tab">About iSnooze</h2>
  iSnooze sits in your system tray and lets you schedule times for iTunes to
  start playing. Spacebar activated snooze, configurable snooze time, gradual
  volume increasing, multiple alarm schedules, playlist selection, temporary
  pausing when you reach your computer to give you time to shut it off...why I
  daresay iSnooze has it all!
 </div>
-<h2 onclick="toggle_section('author');">Author</h2>
-<div style="clear:both;"></div>
-<div id="author" style="display:none;">
+<div id="author" class="tab-page">
+<h2 class="tab">Author</h2>
   <a href="http://www.progoth.com">Steven Scott</a> &lt;progoth&#64;gmail&#46;com&gt;
 </div>
-<h2 onclick="toggle_section('screens');">Screenshots</h2>
-<div style="clear:both;"></div>
-<div id="screens" style="display:none;">
+<div id="screens" class="tab-page">
+ <h2 class="tab">Screenshots</h2>
  <p>
   <a href="files/confignew.png"><img src="files/confignew-thumb.png" alt="new configure" /></a>
   <a href="files/config.png"><img src="files/config-thumb.png" alt="configure" /></a>
   <img src="files/snooze.png" alt="snooze" />
-</p>
-<div>
+ </p>
+ <div>
   These aren't screenshots but I asked the famed Lauren to make me an
   iSnooze icon, and she delivered.  Unfortunately they can't be used as
   an icon, but they are good anyway.<br />
   I am particularly fond of the alarm clock with the guitar!<br />
   <div>
-  <img src="files/alarm_clock_dj.png" alt="dj1" />
-  <img src="files/alarm_clock_dj2.png" alt="dj2" />
-  <img src="files/alarm_clock_rock.png" alt="rock" />
+   <img src="files/alarm_clock_dj.png" alt="dj1" />
+   <img src="files/alarm_clock_dj2.png" alt="dj2" />
+   <img src="files/alarm_clock_rock.png" alt="rock" />
   </div>
+ </div>
 </div>
-</div>
-<h2 onclick="toggle_section('download');">Get It</h2>
-<div style="clear:both;"></div>
-<div id="download" style="display:none;">
+<div id="download" class="tab-page">
+<h2 class="tab">Get It</h2>
  <div>
   "Oops" Release 1.3:
   <a href="files/SetupiSnooze-1.3.exe">SetupiSnooze-1.3.exe</a>
@@ -112,18 +112,27 @@
   </ul>
 </div>
 </div>
-<h2 onclick="toggle_section('opensource');">Source Code</h2>
-<div style="clear:both;"></div>
-<div id="opensource" style="display:none;">
+<div id="opensource" class="tab-page">
+<h2 class="tab">Source Code</h2>
  <p>iSnooze is licensed under the GPL.  You can get the sourcecode here:</p>
  <p><a href="http://www.progoth.com:2020/viewcvs/viewcvs.cgi/itunesalarm/">Browse the Repository </a></p>
 </div>
 <!-- <p>The latest source can always be checked out by pointing your <a href="http://subversion.tigris.org">Subversion</a> client to <a href="http://www.progoth.com:2020/itunesalarm/trunk">http://www.progoth.com:2020/itunesalarm/trunk</a></p> -->
-<h2 onclick="toggle_section('motivation');">Why iSnooze?</h2>
-<div style="clear:both;"></div>
-<div id="motivation" style="display:none">I got sick of getting to work late.</div>
-<hr />
-<div class="svn">$Id$</div>
+<div id="motivation" class="tab-page">
+ <h2 class="tab">Why iSnooze?</h2>
+ I got sick of getting to work late.
+</div>
+
+<!-- tab-pane -->
+</div>
+
+<div style="clear:both;"><br /><br /><br /></div>
+
+<div class="svn">
+  <br /><br />
+  <hr style="width:200px;" />
+  $Id$
+</div>
 <div><br /></div>
 </body>
 </html>
