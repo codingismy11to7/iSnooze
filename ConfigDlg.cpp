@@ -121,9 +121,15 @@ void CConfigDlg::GetPlaylists()
 {
     //m_playlists.push_back(_T("Playlist 1"));
     //m_playlists.push_back(_T("Playlist 2"));
-    ITI::Connect();
-    ITI::GetPlaylists( m_playlists/*, m_plids*/ );
-    ITI::Disconnect();
+	try {
+		ITI::Connect();
+		ITI::GetPlaylists( m_playlists/*, m_plids*/ );
+		ITI::Disconnect();
+	}
+	catch( trterror &e )
+	{
+		MessageBox( e.error().c_str(), _T("iTunes Error") );
+	}
 }
 
 void CConfigDlg::OnBnClickedButton1()
