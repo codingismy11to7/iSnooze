@@ -24,6 +24,7 @@
 #include "afxwin.h"
 #include "afxcmn.h"
 #include "groupcontrol.h"
+#include "DayTime.h"
 
 // CConfigDlg dialog
 
@@ -50,12 +51,30 @@ protected:
     void SelectPlaylist();
 	void LoadTimeFromReg();
 	void SaveTimeToReg();
+	void LoadAlarmsFromReg();
+	void SaveAlarmsToReg();
+	void SetDlgTimeFromTAD( const DayTime::TimeAndDays &in );
+	void GetTADFromDlgTime( DayTime::TimeAndDays &out );
+	void FillAlarmsList();
+	void SetTimeDlg();
+	void DoDayCheck(UINT id, BYTE val);
+	//void AddCurrentToAlarms();
+	//void SaveNewAlarm();
+	//void DiscardNewAlarm();
+	//void SaveCurrentAlarm();
+	//void SaveLeavingAlarm();
+	void RedrawCurrentAlarmItem();
 
     BOOL OnInitDialog();
 
     RegMap m_reg;
+	bool m_addingNew;
+	bool m_deleting;
+	int m_curAlarmsSelection;
     std::vector<tstring> m_playlists;
     std::vector<ITID> m_plids;
+
+	std::vector<DayTime::TimeAndDays> m_alarms;
 
     HWND m_parentHwnd;
 
@@ -84,4 +103,19 @@ public:
 	afx_msg void OnBnClickedDelete();
 protected:
 	CGroupControl m_daysBox;
+public:
+	afx_msg void OnCbnSelchangeAlarmCombo();
+	afx_msg void OnBnClickedAdd();
+protected:
+	CComboBox m_alarmsList;
+public:
+	afx_msg void OnCbnSelchangeHours();
+	afx_msg void OnCbnSelchangeMins();
+	afx_msg void OnBnClickedSundayCheck();
+	afx_msg void OnBnClickedMondayCheck();
+	afx_msg void OnBnClickedTuesdayCheck();
+	afx_msg void OnBnClickedWednesdayCheck();
+	afx_msg void OnBnClickedThursdayCheck();
+	afx_msg void OnBnClickedFridayCheck();
+	afx_msg void OnBnClickedSaturdayCheck();
 };

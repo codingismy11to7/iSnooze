@@ -323,6 +323,8 @@ void CMainFrame::InitReg()
 	tt.getToBinary( (BYTE*)b.data.c_str() );
 	if( !m_reg.has_key( _T("AlarmTime") ) )
 		m_reg[_T("AlarmTime")] = b;
+	if( !m_reg.has_key( _T("Alarms") ) )
+		m_reg[_T("Alarms")] = b;
     if( !m_reg.has_key( _T("PlaylistName") ) )
         m_reg[_T("PlaylistName")] = _T("");
     if( !m_reg.has_key( _T("Shuffle") ) )

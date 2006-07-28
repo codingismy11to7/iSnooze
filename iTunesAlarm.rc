@@ -153,14 +153,14 @@ BEGIN
                     WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "A&dd",IDC_ADD,22,26,44,13
     PUSHBUTTON      "De&lete",IDC_DELETE,77,26,46,13
+    GROUPBOX        "Sc&hedule",IDC_DAYS_GROUP,16,41,168,57
     LTEXT           "&Time: ",IDC_TIME_LABEL,29,53,20,8,0,WS_EX_RIGHT
     COMBOBOX        IDC_HOURS,49,51,27,94,CBS_DROPDOWNLIST | WS_VSCROLL | 
                     WS_TABSTOP
-    COMBOBOX        IDC_MINS,80,51,27,94,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
     CONTROL         ":",IDC_COLON_LABEL,"Static",SS_SIMPLE | WS_GROUP,77,53,
                     8,8,WS_EX_TRANSPARENT
-    GROUPBOX        "Sc&hedule",IDC_DAYS_GROUP,16,41,168,57
+    COMBOBOX        IDC_MINS,80,51,27,94,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
     CONTROL         "Sunday",IDC_SUNDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
                     WS_GROUP | WS_TABSTOP,126,51,40,10
     CONTROL         "Monday",IDC_MONDAY_CHECK,"Button",BS_AUTOCHECKBOX | 

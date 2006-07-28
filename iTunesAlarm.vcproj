@@ -131,6 +131,9 @@
 				RelativePath=".\ConfigDlg.cpp">
 			</File>
 			<File
+				RelativePath=".\DayTime.cpp">
+			</File>
+			<File
 				RelativePath=".\GroupControl.cpp">
 			</File>
 			<File
@@ -208,6 +211,9 @@
 				RelativePath=".\ConfigDlg.h">
 			</File>
 			<File
+				RelativePath=".\DayTime.h">
+			</File>
+			<File
 				RelativePath=".\GroupControl.h">
 			</File>
 			<File
@@ -239,6 +245,9 @@
 			</File>
 			<File
 				RelativePath=".\SystemTray.h">
+			</File>
+			<File
+				RelativePath=".\t.h">
 			</File>
 			<File
 				RelativePath=".\ToolTipButton.h">

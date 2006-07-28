@@ -18,14 +18,18 @@
 
 #pragma once
 
+#include <sstream>
+
 #ifdef _UNICODE
 #include "wrterror.h"
-#define tstring std::wstring
-#define trterror wruntime_error
+typedef std::wstring tstring;
+typedef wruntime_error trterror;
+typedef std::wstringstream tstringstream;
 #define ERRMSG(x) (x).error()
 #else
-#define tstring std::string
-#define trterror std::runtime_error
+typedef std::string tstring;
+typedef std::runtime_error trterror;
+typedef std::stringstream tstringstream;
 #define ERRMSG(x) (x).what()
 #endif
 
