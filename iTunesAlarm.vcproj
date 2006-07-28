@@ -285,6 +285,9 @@
 				RelativePath=".\res\iTunesAlarm.rc2">
 			</File>
 			<File
+				RelativePath=".\res\iTunesAlarmDis.ico">
+			</File>
+			<File
 				RelativePath=".\res\paypaldis.bmp">
 			</File>
 			<File

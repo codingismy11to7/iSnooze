@@ -612,11 +612,13 @@ void CMainFrame::OnAlarmEnabled()
 		}
 		m_reg[_T("AlarmEnabled")] = m_alarmEnabled = false;
 		m_systray.CheckMenuItem( ID_APP_ALARMENABLED, MF_UNCHECKED );
+		m_systray.SetIcon( IDI_DISABLED );
 	}
 	else
 	{
 		m_reg[_T("AlarmEnabled")] = m_alarmEnabled = true;
 		m_systray.CheckMenuItem( ID_APP_ALARMENABLED, MF_CHECKED );
+		m_systray.SetIcon( IDR_MAINFRAME );
 	}
 	SetToolTip();
 }

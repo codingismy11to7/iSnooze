@@ -20,7 +20,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "iTunesAlarm"
-!define PRODUCT_VERSION "1.2"
+!define PRODUCT_VERSION "1.2.1"
 !define PRODUCT_PUBLISHER "Steven Scott"
 !define PRODUCT_WEB_SITE "http://www.progoth.com"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\iTunesAlarm.exe"

@@ -65,6 +65,7 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\iTunesAlarm.ico"
+IDI_DISABLED            ICON                    "res\\iTunesAlarmDis.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -97,7 +98,7 @@ BEGIN
     POPUP "POOP"
     BEGIN
         MENUITEM "&Configure",                  ID_APP_CONFIGURE
-        MENUITEM "Alarms &Enabled",             ID_APP_ALARMENABLED, CHECKED
+        MENUITEM "&Enable Alarm?",              ID_APP_ALARMENABLED, CHECKED
         MENUITEM "Cancel &Snooze",              ID_APP_CANCELSNOOZE, GRAYED
         MENUITEM "Test &Launch",                ID_APP_TESTLAUNCH
         MENUITEM SEPARATOR
@@ -139,7 +140,7 @@ CAPTION "About iTunesAlarm"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
-    LTEXT           "iTunesAlarm Version 1.2",IDC_STATIC,40,10,119,8,
+    LTEXT           "iTunesAlarm Version 1.2.1",IDC_STATIC,40,10,119,8,
                     SS_NOPREFIX
     LTEXT           "Copyright (C) Steven Scott, 2004",IDC_STATIC,40,25,119,
                     8
@@ -229,8 +230,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,2,0,32
- PRODUCTVERSION 1,2,0,32
+ FILEVERSION 1,2,1,41
+ PRODUCTVERSION 1,2,1,41
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -247,12 +248,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Progoth.com"
             VALUE "FileDescription", "iTunesAlarm Executable"
-            VALUE "FileVersion", "1.2.0.32"
+            VALUE "FileVersion", "1.2.1.41"
             VALUE "InternalName", "iTunesAlarm.exe"
             VALUE "LegalCopyright", "(c) 2004, Steven Scott.  All rights reserved."
             VALUE "OriginalFilename", "iTunesAlarm.exe"
             VALUE "ProductName", "iTunes Alarm"
-            VALUE "ProductVersion", "1.2.0.32"
+            VALUE "ProductVersion", "1.2.1.41"
         END
     END
     BLOCK "VarFileInfo"

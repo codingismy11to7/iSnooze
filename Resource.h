@@ -17,6 +17,8 @@
 #define IDS_DELETE_TIP                  133
 #define IDS_PAYPAL_TIP                  134
 #define IDD_SNOOZE_DIALOG               136
+#define IDI_ICON1                       143
+#define IDI_DISABLED                    143
 #define IDC_CHECK1                      1000
 #define IDC_CHECK_SHUFFLE               1000
 #define IDC_COMBO1                      1001
@@ -62,7 +64,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        143
+#define _APS_NEXT_RESOURCE_VALUE        144
 #define _APS_NEXT_COMMAND_VALUE         32786
 #define _APS_NEXT_CONTROL_VALUE         1036
 #define _APS_NEXT_SYMED_VALUE           101
