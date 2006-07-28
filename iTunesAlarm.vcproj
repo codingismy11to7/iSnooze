@@ -131,6 +131,9 @@
 				RelativePath=".\ConfigDlg.cpp">
 			</File>
 			<File
+				RelativePath=".\ITI.cpp">
+			</File>
+			<File
 				RelativePath=".\iTunesAlarm.cpp">
 			</File>
 			<File
@@ -194,6 +197,9 @@
 			</File>
 			<File
 				RelativePath=".\ConfigDlg.h">
+			</File>
+			<File
+				RelativePath=".\ITI.h">
 			</File>
 			<File
 				RelativePath=".\iTunesAlarm.h">
