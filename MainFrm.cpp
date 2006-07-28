@@ -46,11 +46,13 @@ DWORD WINAPI TimerThread( LPVOID param )
 DWORD WINAPI VolumeThread( LPVOID param )
 {
 	CMainFrame *caller = (CMainFrame*)param;
-	int wait = 10 * caller->getVolumeLength(); //1000 ms per second, 100 steps
-	for( int i = 0; i < 100; i++ )
+    int begin = 0;
+    int end = 100;
+	int wait = (1000 * caller->getVolumeLength()) / (end - begin);
+	for( int i = 0; i < (end-begin); i++ )
 	{
 		Sleep( wait );
-		caller->setVolume( i + 1 );
+		caller->setVolume( i + begin + 1 );
 	}
 	caller->closeITI();
 	return 0;
@@ -168,6 +170,13 @@ void CMainFrame::InitReg()
 		m_reg[_T("IncreaseTime")] = (DWORD)10;
     if( !m_reg.has_key( _T("MinimizeOnAlarm") ) )
         m_reg[_T("MinimizeOnAlarm")] = true;
+    if( !m_reg.has_key( _T("BeenRun") ) )
+        m_reg[_T("BeenRun")] = false;
+
+    RegMap t( HKEY_CURRENT_USER );
+    t = t[_T("Software")][_T("Microsoft")][_T("Windows")][_T("CurrentVersion")];
+    if( !t.has_key( _T("Run") ) )
+      t[_T("Run")] = RegMap();
 }
 
 void CMainFrame::LoadReg()
@@ -235,6 +244,9 @@ void CMainFrame::StartTray()
 
 	InitReg();
     LoadReg();
+
+    if( !((bool)m_reg[_T("BeenRun")]) )
+        OnAppConfigure();
 
     CreateThread( NULL, 0, TimerThread, this, 0, NULL );
 }

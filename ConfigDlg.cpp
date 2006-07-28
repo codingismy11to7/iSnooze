@@ -198,6 +198,8 @@ void CConfigDlg::OnBnClickedOk()
             t.deleteValue( _T("iTunesAlarm") );
     }
 
+    m_reg[_T("BeenRun")] = true;
+
     ::PostMessage( m_parentHwnd, WM_CONFIG_UPDATE, 0, 0 );
 
     OnOK();
