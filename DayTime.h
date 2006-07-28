@@ -1,5 +1,8 @@
 #pragma once
 
+#define WIN32_MEAN_AND_LEAN
+
+#include <windows.h>
 #include <string>
 #include <vector>
 
@@ -12,13 +15,17 @@ namespace DayTime {
 	const unsigned char THURSDAY  = 16;
 	const unsigned char FRIDAY    = 32;
 	const unsigned char SATURDAY  = 64;
+	const unsigned char ALL_DAYS  = 127;
+	const unsigned char WEEKDAYS  = 62;
+
+	const unsigned char Win2DayTime[] = {SUNDAY,MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY};
 
 	typedef struct _TM {
 
 		_TM():time(0), day(0){}
 		_TM( int hour, int minute, BYTE days )
 		{
-			this->day = day;
+			this->day = days;
 			setTime( hour, minute );
 		}
 
@@ -35,22 +42,35 @@ namespace DayTime {
 			hour = (time >> 6) & 0x1f;
 		}
 
-		inline void getBinary( BYTE *data ) const
+		inline void getToBinary( BYTE *data ) const
 		{
 			((unsigned short*)data)[0] = 0x07ff & time;
 			((unsigned char*)data)[2]  =   0x7f &  day;
 		}
 
-		inline void setBinary( const BYTE *data )
+		inline void setFromBinary( const char *data )
 		{
 			time = 0x07ff & ((unsigned short*)data)[0];
 			day  =   0x7f & ((unsigned char*)data)[2];
 		}
 
+		inline bool isIncluded( const SYSTEMTIME &o )
+		{
+			if( !( day & Win2DayTime[o.wDayOfWeek] ) ) return false;
+			int hour, minute; getTime( hour, minute );
+			return ( (minute == o.wMinute) && (hour == o.wHour) );
+		}
+
+		inline bool operator==( const _TM &o )
+		{ return (time == o.time && day == o.day); }
+
+		inline bool operator!=( const _TM &o )
+		{ return !( *this == o ); }
+
 		unsigned short time;
 		unsigned char day;
 
-	} Time;
+	} TimeAndDays;
 
 	template<typename T>
 	void contToBin( const T &in, std::string &out )

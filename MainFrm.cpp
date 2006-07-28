@@ -156,13 +156,13 @@ CMainFrame::~CMainFrame()
 
 void CMainFrame::timeCheck()
 {
+	if( !m_alarmEnabled ) return;
     static SYSTEMTIME time;
     GetLocalTime( &time );
-    if( (!m_snoozing && time.wHour == m_hour && time.wMinute == m_minute)
-        || (time.wHour == m_thour && time.wMinute == m_tminute ) )
+    if( (!m_snoozing && m_alarmTime.isIncluded( time ) )
+        || (m_snoozeAlarmTime.isIncluded( time )) )
     {
-		if( m_alarmEnabled )
-			PostMessage( WM_DO_ALARM, 0, 0 );
+		PostMessage( WM_DO_ALARM, 0, 0 );
     }
 }
 
@@ -265,14 +265,16 @@ LRESULT CMainFrame::DoAlarm(UINT wParam, LONG lParam)
             m_snoozing = true;
             SYSTEMTIME tm;
             GetLocalTime( &tm );
-            m_thour = tm.wHour;
-            m_tminute = tm.wMinute + m_snoozeTime;
-            if( m_tminute > 59 )
+			int tmphour = tm.wHour;
+			int tmpmin = tm.wMinute + m_snoozeTime;
+            if( tmpmin > 59 )
             {
-                m_thour++;
-                if( m_thour > 23 ) m_thour = 0;
-                m_tminute-= 60;
+                tmphour++;
+                if( tmphour > 23 ) tmphour = 0;
+                tmpmin -= 60;
             }
+			m_snoozeAlarmTime.setTime( tmphour, tmpmin );
+			m_snoozeAlarmTime.day = DayTime::ALL_DAYS;
 			SetToolTip();
         }
         else // stop
@@ -309,13 +311,18 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 
 void CMainFrame::InitReg()
 {
-    if( !m_reg.has_key( _T("Hour") ) )
+    /*if( !m_reg.has_key( _T("Hour") ) )
         m_reg[_T("Hour")] = (DWORD)8;
     if( !m_reg.has_key( _T("Minute") ) )
-        m_reg[_T("Minute")] = (DWORD)0;
+        m_reg[_T("Minute")] = (DWORD)0;*/
     binary b;
     if( !m_reg.has_key( _T("Playlist") ) )
         m_reg[_T("Playlist")] = b;
+	DayTime::TimeAndDays tt( 8, 0, DayTime::WEEKDAYS );
+	b.data.resize(3);
+	tt.getToBinary( (BYTE*)b.data.c_str() );
+	if( !m_reg.has_key( _T("AlarmTime") ) )
+		m_reg[_T("AlarmTime")] = b;
     if( !m_reg.has_key( _T("PlaylistName") ) )
         m_reg[_T("PlaylistName")] = _T("");
     if( !m_reg.has_key( _T("Shuffle") ) )
@@ -345,8 +352,9 @@ void CMainFrame::InitReg()
 
 void CMainFrame::LoadReg()
 {
-	m_hour = m_reg[_T("Hour")];
-    m_minute = m_reg[_T("Minute")];
+	/*m_hour = m_reg[_T("Hour")];
+    m_minute = m_reg[_T("Minute")];*/
+	m_alarmTime.setFromBinary( ((binary)m_reg[_T("AlarmTime")]).data.c_str() );
     m_shuffle = m_reg[_T("Shuffle")];
     m_pls.fromBin( ((binary)m_reg[_T("Playlist")]).data.c_str() );
     m_plsname = m_reg[_T("PlaylistName")];
@@ -371,10 +379,17 @@ void CMainFrame::SetToolTip()
 	static TCHAR buf[1024];
 	if( m_alarmEnabled )
 	{
+		int hour, minute;
 		if( m_snoozing )
-			_stprintf( buf, _T("iTooonz Alaaarrrm!!\nSnoozing until %d:%02d"), m_thour, m_tminute );
+		{
+			m_snoozeAlarmTime.getTime( hour, minute );
+			_stprintf( buf, _T("iTooonz Alaaarrrm!!\nSnoozing until %d:%02d"), hour, minute );
+		}
 		else
-			_stprintf( buf, _T("iTooonz Alaaarrrm!!\nAlarm Set for %d:%02d"), m_hour, m_minute );
+		{
+			m_alarmTime.getTime( hour, minute );
+			_stprintf( buf, _T("iTooonz Alaaarrrm!!\nAlarm Set for %d:%02d"), hour, minute );
+		}
 	}
 	else
 		_tcscpy( buf, _T("iTooonz Alaaarrrm!!\nAlarm disabled") );

@@ -47,6 +47,8 @@ protected:
     void FillBoxes();
     void GetPlaylists();
     void SelectPlaylist();
+	void LoadTimeFromReg();
+	void SaveTimeToReg();
 
     BOOL OnInitDialog();
 

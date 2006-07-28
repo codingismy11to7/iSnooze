@@ -76,11 +76,11 @@ void CConfigDlg::LoadFromReg()
     binary b;
     b.data = std::string( (char*)id, 4 * sizeof(long) );*/
 
-    CComboBox *hours = (CComboBox*)GetDlgItem( IDC_HOURS );
+    /*CComboBox *hours = (CComboBox*)GetDlgItem( IDC_HOURS );
     hours->SetCurSel( m_reg[_T("Hour")] );
 
     CComboBox *mins = (CComboBox*)GetDlgItem( IDC_MINS );
-    mins->SetCurSel( m_reg[_T("Minute")] );
+    mins->SetCurSel( m_reg[_T("Minute")] );*/
 
     SelectPlaylist();
 
@@ -108,6 +108,47 @@ void CConfigDlg::LoadFromReg()
     GetDlgItem(IDC_SNOOZE_TIME)->SetWindowText( tm );
 
     m_minimize.SetCheck( (((bool)m_reg[_T("MinimizeOnAlarm")])?BST_CHECKED:BST_UNCHECKED) );
+
+	LoadTimeFromReg();
+}
+
+void CConfigDlg::LoadTimeFromReg()
+{
+	DayTime::TimeAndDays tt;
+	tt.setFromBinary( ((binary)m_reg[_T("AlarmTime")]).data.c_str() );
+	int hour, minute;
+	tt.getTime( hour, minute );
+
+	((CComboBox*)GetDlgItem( IDC_HOURS ))->SetCurSel( hour );
+    ((CComboBox*)GetDlgItem( IDC_MINS ))->SetCurSel( minute );
+
+	((CButton*)GetDlgItem(IDC_SUNDAY_CHECK))->SetCheck( ((tt.day & DayTime::SUNDAY)?BST_CHECKED:BST_UNCHECKED) );
+	((CButton*)GetDlgItem(IDC_MONDAY_CHECK))->SetCheck( ((tt.day & DayTime::MONDAY)?BST_CHECKED:BST_UNCHECKED) );
+	((CButton*)GetDlgItem(IDC_TUESDAY_CHECK))->SetCheck( ((tt.day & DayTime::TUESDAY)?BST_CHECKED:BST_UNCHECKED) );
+	((CButton*)GetDlgItem(IDC_WEDNESDAY_CHECK))->SetCheck( ((tt.day & DayTime::WEDNESDAY)?BST_CHECKED:BST_UNCHECKED) );
+	((CButton*)GetDlgItem(IDC_THURSDAY_CHECK))->SetCheck( ((tt.day & DayTime::THURSDAY)?BST_CHECKED:BST_UNCHECKED) );
+	((CButton*)GetDlgItem(IDC_FRIDAY_CHECK))->SetCheck( ((tt.day & DayTime::FRIDAY)?BST_CHECKED:BST_UNCHECKED) );
+	((CButton*)GetDlgItem(IDC_SATURDAY_CHECK))->SetCheck( ((tt.day & DayTime::SATURDAY)?BST_CHECKED:BST_UNCHECKED) );
+}
+
+void CConfigDlg::SaveTimeToReg()
+{
+	DayTime::TimeAndDays tt;
+	tt.setTime( ((CComboBox*)GetDlgItem(IDC_HOURS))->GetCurSel(), ((CComboBox*)GetDlgItem(IDC_MINS))->GetCurSel() );
+
+	if( ((CButton*)GetDlgItem(IDC_SUNDAY_CHECK))->GetCheck() == BST_CHECKED ) tt.day |= DayTime::SUNDAY;
+	if( ((CButton*)GetDlgItem(IDC_MONDAY_CHECK))->GetCheck() == BST_CHECKED ) tt.day |= DayTime::MONDAY;
+	if( ((CButton*)GetDlgItem(IDC_TUESDAY_CHECK))->GetCheck() == BST_CHECKED ) tt.day |= DayTime::TUESDAY;
+	if( ((CButton*)GetDlgItem(IDC_WEDNESDAY_CHECK))->GetCheck() == BST_CHECKED ) tt.day |= DayTime::WEDNESDAY;
+	if( ((CButton*)GetDlgItem(IDC_THURSDAY_CHECK))->GetCheck() == BST_CHECKED ) tt.day |= DayTime::THURSDAY;
+	if( ((CButton*)GetDlgItem(IDC_FRIDAY_CHECK))->GetCheck() == BST_CHECKED ) tt.day |= DayTime::FRIDAY;
+	if( ((CButton*)GetDlgItem(IDC_SATURDAY_CHECK))->GetCheck() == BST_CHECKED ) tt.day |= DayTime::SATURDAY;
+
+	binary b;
+	b.data.resize(3);
+	tt.getToBinary( (BYTE*)b.data.c_str() );
+
+	m_reg[_T("AlarmTime")] = b;
 }
 
 void CConfigDlg::SelectPlaylist()
@@ -217,11 +258,12 @@ void CConfigDlg::OnBnClickedButton1()
 
 void CConfigDlg::OnBnClickedOk()
 {
-    CComboBox *hours = (CComboBox*)GetDlgItem( IDC_HOURS );
+    /*CComboBox *hours = (CComboBox*)GetDlgItem( IDC_HOURS );
     m_reg[_T("Hour")] = hours->GetCurSel();
 
     CComboBox *mins = (CComboBox*)GetDlgItem( IDC_MINS );
-    m_reg[_T("Minute")] = mins->GetCurSel();
+    m_reg[_T("Minute")] = mins->GetCurSel();*/
+	SaveTimeToReg();
 
     CComboBox *playlists = (CComboBox*)GetDlgItem( IDC_PLAYLISTS );
     int pl = playlists->GetCurSel();

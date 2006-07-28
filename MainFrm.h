@@ -81,10 +81,12 @@ protected:
 	CConfigDlg *m_config;
 	RegMap m_reg;
 
-    long m_hour;
+    /*long m_hour;
     long m_minute;
     long m_thour;
-    long m_tminute;
+    long m_tminute;*/
+	DayTime::TimeAndDays m_alarmTime;
+	DayTime::TimeAndDays m_snoozeAlarmTime;
     bool m_snoozing;
     ITID m_pls;
 	tstring m_plsname;
