@@ -1,101 +1,129 @@
- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?xml version="1.0" encoding="us-ascii" ?>
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>iSnooze</title>
+<link rel="stylesheet" type="text/css" title="Default" media="screen" href="default.css" />
+<script type="text/javascript" src="site.js"></script>
 </head>
 
 <body>
 <h1>iSnooze</h1>
-<p>
+<div style="clear:both;">&nbsp;</div>
+
+<h2 onclick="toggle_section('about');">About iSnooze</h2>
+<div style="clear:both;"></div>
+<div id="about">
  iSnooze sits in your system tray and lets you schedule times for iTunes to
  start playing. Spacebar activated snooze, configurable snooze time, gradual
  volume increasing, multiple alarm schedules, playlist selection, temporary
  pausing when you reach your computer to give you time to shut it off...why I
  daresay iSnooze has it all!
-</p>
-<h1>Author</h1>
-<p>Steven Scott &lt;progoth&#64;gmail&#46;com&gt;</p>
-<h1>Screenshots</h1>
-<p>
+</div>
+<h2 onclick="toggle_section('author');">Author</h2>
+<div style="clear:both;"></div>
+<div id="author" style="display:none;">
+  <a href="http://www.progoth.com">Steven Scott</a> &lt;progoth&#64;gmail&#46;com&gt;
+</div>
+<h2 onclick="toggle_section('screens');">Screenshots</h2>
+<div style="clear:both;"></div>
+<div id="screens" style="display:none;">
+ <p>
   <a href="files/confignew.png"><img src="files/confignew-thumb.png" alt="new configure" /></a>
   <a href="files/config.png"><img src="files/config-thumb.png" alt="configure" /></a>
   <img src="files/snooze.png" alt="snooze" />
 </p>
-<p>
+<div>
   These aren't screenshots but I asked the famed Lauren to make me an
   iSnooze icon, and she delivered.  Unfortunately they can't be used as
   an icon, but they are good anyway.<br />
   I am particularly fond of the alarm clock with the guitar!<br />
+  <div>
   <img src="files/alarm_clock_dj.png" alt="dj1" />
   <img src="files/alarm_clock_dj2.png" alt="dj2" />
   <img src="files/alarm_clock_rock.png" alt="rock" />
-</p>
-<h1>Get It</h1>
-<p>
+  </div>
+</div>
+</div>
+<h2 onclick="toggle_section('download');">Get It</h2>
+<div style="clear:both;"></div>
+<div id="download" style="display:none;">
+ <div>
   "Oops" Release 1.3:
   <a href="files/SetupiSnooze-1.3.exe">SetupiSnooze-1.3.exe</a>
   <br />
-  Features:
-  <ul>
+  <span class="features" onclick="toggle_section('r1.3');">Features</span>
+  <ul id="r1.3" style="display:none;">
    <li>You can now disable alarms from the configuration screen.  This is useful, for instance, if you have a temporary schedule change one day, but don't want to delete your normal scheduled alarms.</li>
    <li>The system tray icon now turns red if the alarm is not set to go off, for any reason: no alarms are set, alarms are disabled, all alarms are set to disabled, no alarms have any days set...</li>
-   <li>Changed the volume increaser to start from 30% instead of 0%.  iTunes is practically silent for that whole range anyway.
-   <li>The most important change...iTunesAlarm has been renamed to iSnooze.  When samyi.org suggested I make this program, I was said to myself "hmmm, ok, sounds like a good idea" without even bothering to check if it already existed.  Well, various programs like iSnooze exist, but I still think mine is the best, so I will continue to maintain it, and as always, it is Open Source.  I had to change the name because <a href="http://www.cowpimp.com/archives/2004/05/27/itunesalarm/">"iTunesAlarm" already exists</a>.  My apologies to Bill Zeller, I didn't mean to create any confusion.  This time around, I did search Google for "iSnooze" and I think it's OK.  Thanks to samyi.org for the name, and thanks to everybody else who helped.  It was almost named "Dream Destroyer 3000" thanks to Emily...but that's just too harsh:)  BTW, great minds must think alike, or something, because iSnooze & Bill Zeller's O.G. iTunesAlarm are alike in almost every way, it was crazy.  Same installer, most of the same features, same name, same registry location...we even both considered deleting the registry key on Uninstall (I changed my mind, he left it in), which created some confusion when I uninstalled his iTunesAlarm for the first time.  That'll teach me not to use a VendorName under HKCU\Software...
+   <li>Changed the volume increaser to start from 30% instead of 0%.  iTunes is practically silent for that whole range anyway.</li>
+   <li>The most important change...iTunesAlarm has been renamed to iSnooze.  When samyi.org suggested I make this program, I was said to myself "hmmm, ok, sounds like a good idea" without even bothering to check if it already existed.  Well, various programs like iSnooze exist, but I still think mine is the best, so I will continue to maintain it, and as always, it is Open Source.  I had to change the name because <a href="http://www.cowpimp.com/archives/2004/05/27/itunesalarm/">"iTunesAlarm" already exists</a>.  My apologies to Bill Zeller, I didn't mean to create any confusion.  This time around, I did search Google for "iSnooze" and I think it's OK.  Thanks to samyi.org for the name, and thanks to everybody else who helped.  It was almost named "Dream Destroyer 3000" thanks to Emily...but that's just too harsh:)  BTW, great minds must think alike, or something, because iSnooze &amp; Bill Zeller's O.G. iTunesAlarm are alike in almost every way, it was crazy.  Same installer, most of the same features, same name, same registry location...we even both considered deleting the registry key on Uninstall (I changed my mind, he left it in), which created some confusion when I uninstalled his iTunesAlarm for the first time.  That'll teach me not to use a VendorName under HKCU\Software...</li>
   </ul>
-</p>
-<p>
+</div>
+<br />
+<div>
   "Confusion-Fix" Release 1.2.1:
   <a href="files/SetupiTunesAlarm-1.2.1.exe">SetupiTunesAlarm-1.2.1.exe</a>
   <br />
-  Features:
-  <ul>
+  <span class="features" onclick="toggle_section('r1.2.1');">Features</span>
+  <ul id="r1.2.1" style="display:none;">
    <li>Changed check menu item text from "Alarm Enabled" to "Enable Alarm?"</li>
    <li>Made the system tray icon turn red when the alarm is disabled</li>
    <li>Yes, my main tester man and idea man samyi.org forgot to put his mouse over the alarm icon one night and his alarm was disabled and he did not get to work until very late.  He was very angry at myself and iSnooze and threatened to quit using it and sue me and my pet lizard if his changes were not implemented IMMEDIATELY.  I aim to please, and such, so here it is.  Now I need to hurry so I'm not late to work.  Seriously though, these were good changes.  TODO Figure out why shuffle isn't working!</li>
   </ul>
-</p>
-<p>
+</div>
+<br />
+<div>
   Release 1.2:
   <a href="files/SetupiTunesAlarm-1.2.exe">SetupiTunesAlarm-1.2.exe</a>
   <br />
-  Features:
-  <ul>
+  <span class="features" onclick="toggle_section('r1.2');">Features</span>
+  <ul id="r1.2" style="display:none;">
    <li>Lets you have multiple alarm schedules (have one for the weekend, perhaps, or different times on different days to account for school schedules)</li>
    <li>Lets you cancel a pending snooze alarm before it goes off (thus stopping the alarm)</li>
   </ul>
-</p>
-<p>
+</div>
+<br />
+<div>
   Release 1.1:
   <a href="files/SetupiTunesAlarm-1.1.exe">SetupiTunesAlarm-1.1.exe</a>
   <br />
-  Features:
-  <ul>
+  <span class="features" onclick="toggle_section('r1.1');">Features</span>
+  <ul id="r1.1" style="display:none;">
    <li>Automatically opens configure dialog on first run</li>
    <li>Allows you to select which days the alarm will go off</li>
   </ul>
-</p>
-<p>
+</div>
+<br />
+<div>
   Release 1.0: 
   <a href="files/SetupiTunesAlarm-1.0.exe">SetupiTunesAlarm-1.0.exe</a>
   <br />
-  Features:
-  <ul>
+  <span class="features" onclick="toggle_section('r1.0');">Features</span>
+  <ul id="r1.0" style="display:none;">
    <li>Choose a playlist, optional shuffle</li>
    <li>Increases volume gradually over a specified time</li>
    <li>Can minimize iTunes when setting off alarm</li>
    <li>Can run iSnooze at startup</li>
    <li>Configurable snooze time</li>
    <li>Can pause when you hit the mouse or keyboard when the alarm is going off</li>
+   <li>Handles the target playlist being renamed, or the target playlist being deleted and then recreated with the old name.</li>
   </ul>
-</p>
-<h1>Source Code</h1>
-<p>iSnooze is licensed under the GPL.  You can get the sourcecode here:</p>
-<p><a href="http://www.progoth.com:2020/viewcvs/viewcvs.cgi/itunesalarm/">Browse the Repository </a></p>
+</div>
+</div>
+<h2 onclick="toggle_section('opensource');">Source Code</h2>
+<div style="clear:both;"></div>
+<div id="opensource" style="display:none;">
+ <p>iSnooze is licensed under the GPL.  You can get the sourcecode here:</p>
+ <p><a href="http://www.progoth.com:2020/viewcvs/viewcvs.cgi/itunesalarm/">Browse the Repository </a></p>
+</div>
 <!-- <p>The latest source can always be checked out by pointing your <a href="http://subversion.tigris.org">Subversion</a> client to <a href="http://www.progoth.com:2020/itunesalarm/trunk">http://www.progoth.com:2020/itunesalarm/trunk</a></p> -->
-<h1>Why iSnooze?</h1>
-<p>I got sick of getting to work late.</p>
+<h2 onclick="toggle_section('motivation');">Why iSnooze?</h2>
+<div style="clear:both;"></div>
+<div id="motivation" style="display:none">I got sick of getting to work late.</div>
 <hr />
-<span style="font-size: smaller;">$Id$</span>
+<div class="svn">$Id$</div>
+<div><br /></div>
 </body>
 </html>
