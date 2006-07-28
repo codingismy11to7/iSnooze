@@ -12,6 +12,7 @@
 #define IDD_DIALOG1                     131
 #define IDD_CONFIG_DIALOG               131
 #define IDR_RT_MANIFEST1                132
+#define IDD_SNOOZE_DIALOG               136
 #define IDC_CHECK1                      1000
 #define IDC_CHECK_SHUFFLE               1000
 #define IDC_COMBO1                      1001
@@ -23,6 +24,14 @@
 #define IDC_INCREASE_CHECK              1008
 #define IDC_MINIMIZE_CHECK              1010
 #define IDC_STARTUP_CHECK               1011
+#define ID_STOP_BUTTON                  1015
+#define IDC_ENABLE_SNOOZE               1016
+#define IDC_CHECK3                      1017
+#define IDC_DO_MUTE                     1017
+#define IDC_SNOOZE_TIME                 1019
+#define IDC_SNOOZE_SPIN                 1020
+#define IDC_SNOOZE_LABEL2               1021
+#define IDC_SNOOZE_LABEL                1022
 #define ID_POOP_TEST                    32773
 #define ID_APP_CONFIGURE                32774
 #define ID_POOP_TESTBUBBLE              32775
@@ -32,9 +41,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        135
+#define _APS_NEXT_RESOURCE_VALUE        139
 #define _APS_NEXT_COMMAND_VALUE         32778
-#define _APS_NEXT_CONTROL_VALUE         1012
+#define _APS_NEXT_CONTROL_VALUE         1023
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

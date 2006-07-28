@@ -155,7 +155,11 @@ void ITI::playPlaylist( const tstring &plname, bool shuffle )
 void ITI::setVolume( UINT level )
 {
 	if( level <= 100 )
+    {
+        ITI::Connect(); //should already be connected, so this shouldn't hurt
 		m_iTunesApp->put_SoundVolume( level );
+        ITI::Disconnect();
+    }
 }
 
 void ITI::minimize()

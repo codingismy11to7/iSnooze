@@ -14,6 +14,14 @@ CConfigDlg::CConfigDlg(const RegMap &reg, CWnd* pParent /*=NULL*/)
 {
 	Create( CConfigDlg::IDD, pParent );
 
+    m_parentHwnd = pParent->GetSafeHwnd();
+}
+
+BOOL CConfigDlg::OnInitDialog()
+{
+    if( !CDialog::OnInitDialog() )
+        return FALSE;
+
 	CString tip;
 	tip.LoadString( IDS_INCREASE_TIP );
 	m_increase.SetToolTipText( &tip );
@@ -23,8 +31,9 @@ CConfigDlg::CConfigDlg(const RegMap &reg, CWnd* pParent /*=NULL*/)
 
     GetPlaylists();
     FillBoxes();
-    m_parentHwnd = pParent->GetSafeHwnd();
 
+    m_snoozeTime.SetWindowText( _T("1") );
+    m_snoozeSpin.SetRange( 1, 60 );
 
 	CSliderCtrl *secs = (CSliderCtrl*)GetDlgItem( IDC_SECONDS_SLIDER );
 
@@ -32,6 +41,12 @@ CConfigDlg::CConfigDlg(const RegMap &reg, CWnd* pParent /*=NULL*/)
 	secs->SetRangeMin( 10 );
 	secs->SetRangeMax( 120 );
 	secs->EnableWindow( false );
+
+    SetFocus();
+    SetForegroundWindow();
+    GetDlgItem(IDC_PLAYLISTS)->SetFocus();
+
+    return TRUE;
 }
 
 void CConfigDlg::LoadFromReg()
@@ -56,10 +71,21 @@ void CConfigDlg::LoadFromReg()
 	m_increase.SetCheck( (((bool)m_reg[_T("IncreaseVolume")]) ? BST_CHECKED : BST_UNCHECKED) );
 	OnBnClickedIncreaseCheck();
 
+    ((CButton*)GetDlgItem(IDC_DO_MUTE))->SetCheck( (((bool)m_reg[_T("MuteOnReturn")]) ? BST_CHECKED : BST_UNCHECKED) );
+
+    ((CButton*)GetDlgItem(IDC_ENABLE_SNOOZE))->SetCheck( (((bool)m_reg[_T("EnableSnooze")]) ? BST_CHECKED : BST_UNCHECKED) );
+    OnBnClickedEnableSnooze();
+
     CButton *runatstartup = (CButton*)GetDlgItem( IDC_STARTUP_CHECK );
     RegMap t(HKEY_CURRENT_USER);
     t = t[_T("Software")][_T("Microsoft")][_T("Windows")][_T("CurrentVersion")][_T("Run")];
     runatstartup->SetCheck( ((t.has_key(_T("iTunesAlarm")))?BST_CHECKED:BST_UNCHECKED) );
+
+    long st = 0xff & (long)m_reg[_T("SnoozeTime")];
+    if( st < 1 ) st = 1; if( st > 60 ) st = 60;
+    TCHAR tm[4];
+    _stprintf( tm, _T("%d"), st );
+    GetDlgItem(IDC_SNOOZE_TIME)->SetWindowText( tm );
 
     m_minimize.SetCheck( (((bool)m_reg[_T("MinimizeOnAlarm")])?BST_CHECKED:BST_UNCHECKED) );
 }
@@ -107,10 +133,12 @@ CConfigDlg::~CConfigDlg()
 
 void CConfigDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_INCREASE_CHECK, m_increase);
-	DDX_Control(pDX, IDC_SECONDS_SLIDER, m_secondsSlider);
+    CDialog::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_INCREASE_CHECK, m_increase);
+    DDX_Control(pDX, IDC_SECONDS_SLIDER, m_secondsSlider);
     DDX_Control(pDX, IDC_MINIMIZE_CHECK, m_minimize);
+    DDX_Control(pDX, IDC_SNOOZE_TIME, m_snoozeTime);
+    DDX_Control(pDX, IDC_SNOOZE_SPIN, m_snoozeSpin);
 }
 
 
@@ -119,6 +147,7 @@ BEGIN_MESSAGE_MAP(CConfigDlg, CDialog)
     ON_BN_CLICKED(IDOK, OnBnClickedOk)
 	ON_NOTIFY(TTN_NEEDTEXT, NULL, OnNeedText)
 	ON_BN_CLICKED(IDC_INCREASE_CHECK, OnBnClickedIncreaseCheck)
+    ON_BN_CLICKED(IDC_ENABLE_SNOOZE, OnBnClickedEnableSnooze)
 END_MESSAGE_MAP()
 
 //	ON_WM_HSCROLL()
@@ -183,6 +212,15 @@ void CConfigDlg::OnBnClickedOk()
 
     m_reg[_T("MinimizeOnAlarm")] = ( m_minimize.GetCheck() == BST_CHECKED ) ? true : false;
 
+    m_reg[_T("MuteOnReturn")] = ( ((CButton*)GetDlgItem(IDC_DO_MUTE))->GetCheck() == BST_CHECKED ) ? true : false;
+
+    m_reg[_T("EnableSnooze")] = ( ((CButton*)GetDlgItem(IDC_ENABLE_SNOOZE))->GetCheck() == BST_CHECKED ) ? true : false;
+    TCHAR tm[20];
+    GetDlgItem(IDC_SNOOZE_TIME)->GetWindowText( tm, 19 );
+    long st = 0xff & _tstol( tm );
+    if( st < 1 ) st = 1; if( st > 60 ) st = 60;
+    m_reg[_T("SnoozeTime")] = st;
+
     RegMap t( HKEY_CURRENT_USER );
     t = t[_T("Software")][_T("Microsoft")][_T("Windows")][_T("CurrentVersion")][_T("Run")];
     CButton *runonstartup = (CButton*)GetDlgItem( IDC_STARTUP_CHECK );
@@ -221,3 +259,20 @@ void CConfigDlg::OnBnClickedIncreaseCheck()
 {
 	m_secondsSlider.EnableWindow( ( (m_increase.GetCheck() == BST_CHECKED) ? true : false ) );
 }
+
+void CConfigDlg::OnBnClickedEnableSnooze()
+{
+    if( ((CButton*)GetDlgItem(IDC_ENABLE_SNOOZE))->GetCheck() == BST_CHECKED )
+    {
+        GetDlgItem(IDC_SNOOZE_TIME)->EnableWindow( true );
+        GetDlgItem(IDC_SNOOZE_LABEL)->EnableWindow( true );
+        GetDlgItem(IDC_SNOOZE_LABEL2)->EnableWindow( true );
+    }
+    else
+    {
+        GetDlgItem(IDC_SNOOZE_TIME)->EnableWindow( false );
+        GetDlgItem(IDC_SNOOZE_LABEL)->EnableWindow( false );
+        GetDlgItem(IDC_SNOOZE_LABEL2)->EnableWindow( false );
+    }
+}
+

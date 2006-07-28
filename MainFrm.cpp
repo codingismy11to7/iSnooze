@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "iTunesAlarm.h"
 #include "ITI.h"
+#include "SnoozeDlg.h"
 
 #include ".\mainfrm.h"
 
@@ -21,6 +22,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
     ON_MESSAGE(WM_CONFIG_UPDATE, OnConfigUpdate)
     ON_MESSAGE(WM_DO_ALARM, DoAlarm)
 	ON_MESSAGE(WM_SET_VOLUME, OnSetVolume)
+    ON_MESSAGE(WM_USER_RETURNED, OnUserReturned)
+    ON_MESSAGE(WM_USER_GONE, OnUserGone)
 	ON_WM_CLOSE()
 	ON_WM_CANCELMODE()
 	ON_COMMAND(ID_APP_CONFIGURE, OnAppConfigure)
@@ -32,13 +35,17 @@ DWORD WINAPI TimerThread( LPVOID param )
 {
     CMainFrame *caller = (CMainFrame*)param;
     SYSTEMTIME t;
-    GetLocalTime( &t );
-    if( t.wSecond )
-        Sleep( ( 60 - t.wSecond ) * 1000 ); //sleep until this minute completes
+    unsigned char i = 0;
     while( true )
     {
         caller->timeCheck();
-        Sleep(60000);
+        if( (i++ % 16) != 0 )
+            Sleep(60000);
+        else
+        {
+            GetLocalTime( &t );
+            Sleep( ( 60 - t.wSecond ) * 1000 );  //reset our count every 16 minutes
+        }
     }
     return 0;
 }
@@ -48,14 +55,64 @@ DWORD WINAPI VolumeThread( LPVOID param )
 	CMainFrame *caller = (CMainFrame*)param;
     int begin = 0;
     int end = 100;
-	int wait = (1000 * caller->getVolumeLength()) / (end - begin);
-	for( int i = 0; i < (end-begin); i++ )
+    int increaseStep = 5;
+	int wait = (increaseStep * 1000 * caller->getVolumeLength()) / (end - begin);
+	for( int i = 0; (i < (end-begin)) && (caller->increasingVolume() != VI_NOOP); i+=increaseStep )
 	{
-		Sleep( wait );
-		caller->setVolume( i + begin + 1 );
+        Sleep( wait );
+        if( caller->increasingVolume() == VI_PAUSE )
+        {
+            Sleep( 100 );
+            i-=increaseStep;
+        }
+        else
+        {
+		    caller->setVolume( i + begin + increaseStep );
+        }
 	}
 	caller->closeITI();
 	return 0;
+}
+
+DWORD WINAPI IdleThread( LPVOID param )
+{
+    CMainFrame *caller = (CMainFrame*)param;
+
+    LASTINPUTINFO lii;
+    lii.cbSize = sizeof(LASTINPUTINFO);
+    GetLastInputInfo( &lii );
+    DWORD lastidle = lii.dwTime;
+    while( caller->snoozeDlgOpened() && (lii.dwTime <= lastidle) )
+    {
+        Sleep(250);
+        GetLastInputInfo( &lii );
+        //lastidle = lii.dwTime;
+    }
+    caller->userReturned();
+
+    return 0;
+}
+
+DWORD WINAPI CheckForAway( LPVOID param )
+{
+    CMainFrame *caller = (CMainFrame*)param;
+
+    LASTINPUTINFO lii;
+    lii.cbSize = sizeof(LASTINPUTINFO);
+    GetLastInputInfo( &lii );
+    //DWORD lastinput = lii.dwTime;
+    while( caller->snoozeDlgOpened() )
+    {
+        Sleep( 1000 );
+        GetLastInputInfo( &lii );
+        if( GetTickCount() - lii.dwTime >= 10000 )
+        {
+            caller->userGone();
+            return 0;
+        }
+    }
+
+    return 0;
 }
 
 // CMainFrame construction/destruction
@@ -83,7 +140,8 @@ void CMainFrame::timeCheck()
 {
     static SYSTEMTIME time;
     GetLocalTime( &time );
-    if( time.wHour == m_hour && time.wMinute == m_minute )
+    if( (!m_snoozing && time.wHour == m_hour && time.wMinute == m_minute)
+        || (time.wHour == m_thour && time.wMinute == m_tminute ) )
     {
 		PostMessage( WM_DO_ALARM, 0, 0 );
     }
@@ -92,6 +150,48 @@ void CMainFrame::timeCheck()
 void CMainFrame::setVolume( UINT level )
 {
 	PostMessage(WM_SET_VOLUME, level, 0);
+}
+
+void CMainFrame::userReturned()
+{
+    PostMessage(WM_USER_RETURNED, 0, 0);
+}
+
+void CMainFrame::userGone()
+{
+    PostMessage(WM_USER_GONE, 0, 0);
+}
+
+LRESULT CMainFrame::OnUserGone(UINT wParam, LONG lParam)
+{
+    if( !m_snoozeDlgOpen )
+        return 1;
+    if( m_volumeIncreasing == VI_PAUSE )
+        m_volumeIncreasing = VI_INCREASE;
+
+    ITI::Connect();
+    ITI::Play();
+    ITI::Disconnect();
+
+    CreateThread( NULL, 0, IdleThread, this, 0, NULL );
+
+    return 1;
+}
+
+LRESULT CMainFrame::OnUserReturned(UINT wParam, LONG lParam)
+{
+    if( !m_snoozeDlgOpen )
+        return 1;
+    if( m_volumeIncreasing == VI_INCREASE )
+        m_volumeIncreasing = VI_PAUSE;
+
+    ITI::Connect();
+    ITI::Pause();
+    ITI::Disconnect();
+
+    CreateThread( NULL, 0, CheckForAway, this, 0, NULL );
+
+    return 1;
 }
 
 LRESULT CMainFrame::OnSetVolume(UINT wParam, LONG lParam)
@@ -113,28 +213,61 @@ LRESULT CMainFrame::DoAlarm(UINT wParam, LONG lParam)
         _T("DANGER DANGER"), NIIF_WARNING, 30 );
     try
     {
+        if( m_increase )
+        {
+            ITI::Connect();
+            m_volumeIncreasing = VI_INCREASE;
+            // this will disconnect() when it ends
+            ITI::ZeroVolume();
+            CreateThread( NULL, 0, VolumeThread, this, 0, NULL );
+        }
+
         ITI::Connect();
         if( m_minimize ) ITI::Minimize();
         ITI::PlayPlaylist( m_pls, m_shuffle );
         ITI::Disconnect();
+
+        if( m_muteOnRet )
+            CreateThread( NULL, 0, IdleThread, this, 0, NULL );
+        m_snoozeDlgOpen = true;
+        CSnoozeDlg sd( this, m_enableSnooze );
+        if( sd.DoModal() == IDOK ) // snooze
+        {
+            m_snoozeDlgOpen = false;
+            ITI::Connect();
+            ITI::Stop();
+            ITI::Disconnect();
+            m_volumeIncreasing = VI_NOOP;
+            /*if( !m_snoozing ) // first snooze hit
+            {
+                m_thour = m_hour;
+                m_tminute = m_minute;
+            }*/
+            m_snoozing = true;
+            SYSTEMTIME tm;
+            GetLocalTime( &tm );
+            m_thour = tm.wHour;
+            m_tminute = tm.wMinute + m_snoozeTime;
+            if( m_tminute > 59 )
+            {
+                m_thour++;
+                if( m_thour > 23 ) m_thour = 0;
+                m_tminute-= 60;
+            }
+        }
+        else // stop
+        {
+            m_snoozeDlgOpen = false;
+            ITI::Connect();
+            ITI::Stop();
+            ITI::Disconnect();
+            m_volumeIncreasing = VI_NOOP;
+            m_snoozing = false;
+        }
     }
     catch( trterror &e )
     {
         MessageBox( e.error().c_str() );
-    }
-
-    if( m_increase )
-    {
-        try
-        {
-            ITI::Connect();
-            ITI::ZeroVolume();
-            CreateThread( NULL, 0, VolumeThread, this, 0, NULL );
-        }
-        catch( trterror &e )
-        {
-            MessageBox( e.error().c_str() );
-        }
     }
 
     return 1;
@@ -172,6 +305,12 @@ void CMainFrame::InitReg()
         m_reg[_T("MinimizeOnAlarm")] = true;
     if( !m_reg.has_key( _T("BeenRun") ) )
         m_reg[_T("BeenRun")] = false;
+    if( !m_reg.has_key( _T("EnableSnooze") ) )
+        m_reg[_T("EnableSnooze")] = true;
+    if( !m_reg.has_key( _T("SnoozeTime") ) )
+        m_reg[_T("SnoozeTime")] = 7L;
+    if( !m_reg.has_key( _T("MuteOnReturn") ) )
+        m_reg[_T("MuteOnReturn")] = true;
 
     RegMap t( HKEY_CURRENT_USER );
     t = t[_T("Software")][_T("Microsoft")][_T("Windows")][_T("CurrentVersion")];
@@ -189,6 +328,9 @@ void CMainFrame::LoadReg()
 	m_increase = m_reg[_T("IncreaseVolume")];
 	m_inclength = m_reg[_T("IncreaseTime")];
     m_minimize = m_reg[_T("MinimizeOnAlarm")];
+    m_enableSnooze = m_reg[_T("EnableSnooze")];
+    m_snoozeTime = (unsigned char)(0xff & (long)m_reg[_T("SnoozeTime")]);
+    m_muteOnRet = m_reg[_T("MuteOnReturn")];
 
 	static TCHAR buf[200];
 	_stprintf( buf, _T("iTooonz Alaaarrrm!!\nAlarm Set for %d:%02d"), m_hour, m_minute );
@@ -299,8 +441,10 @@ void CMainFrame::OnAppConfigure()
 
 void CMainFrame::OnPoopTestbubble()
 {
-	m_systray.ShowBalloon( _T("This is a sample bubble popup thing.  It will most likely be used for snooze handling.  Click me!"),
-		_T("WAKE UP"), NIIF_WARNING, 30 );
+	/*m_systray.ShowBalloon( _T("This is a sample bubble popup thing.  It will most likely be used for snooze handling.  Click me!"),
+		_T("WAKE UP"), NIIF_WARNING, 30 );*/
+    CSnoozeDlg x(this);
+    x.DoModal();
 }
 
 void CMainFrame::OnTestLaunch()

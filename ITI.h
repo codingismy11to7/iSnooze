@@ -46,6 +46,12 @@ public:
 	{ ITI::instance()->zeroVolume(); }
     static void Minimize()
     { ITI::instance()->minimize(); }
+    static void Stop()
+    { ITI::instance()->stop(); }
+    static void Pause()
+    { ITI::instance()->pause(); }
+    static void Play()
+    { ITI::instance()->play(); }
 
 	~ITI();
 
@@ -63,6 +69,12 @@ private:
 	void zeroVolume()
 	{ m_iTunesApp->put_SoundVolume(0); }
     void minimize();
+    void stop()
+    { m_iTunesApp->Stop(); }
+    void pause()
+    { m_iTunesApp->Pause(); }
+    void play()
+    { m_iTunesApp->Play(); }
 
 	static ITI *inst;
 	static long refcount;

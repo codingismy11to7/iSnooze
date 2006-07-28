@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "iTunesAlarm.h"
 #include "MainFrm.h"
+#include "LimitSingleInstance.h"
 
 
 #ifdef _DEBUG
@@ -32,10 +33,15 @@ CiTunesAlarmApp::CiTunesAlarmApp()
 
 CiTunesAlarmApp theApp;
 
+CLimitSingleInstance g_Single( _T("1a1f3d44-b045-42af-a92c-b8a86503844e") );
+
 // CiTunesAlarmApp initialization
 
 BOOL CiTunesAlarmApp::InitInstance()
 {
+    if( g_Single.IsAnotherInstanceRunning() )
+        return FALSE;
+
 	// InitCommonControls() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
 	// visual styles.  Otherwise, any window creation will fail.

@@ -170,6 +170,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\SnoozeDlg.cpp">
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -211,6 +214,9 @@
 				RelativePath=".\iTunesCOMInterface.h">
 			</File>
 			<File
+				RelativePath=".\LimitSingleInstance.h">
+			</File>
+			<File
 				RelativePath=".\MainFrm.h">
 			</File>
 			<File
@@ -218,6 +224,9 @@
 			</File>
 			<File
 				RelativePath=".\Resource.h">
+			</File>
+			<File
+				RelativePath=".\SnoozeDlg.h">
 			</File>
 			<File
 				RelativePath=".\stdafx.h">

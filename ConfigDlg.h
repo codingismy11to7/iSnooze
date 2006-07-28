@@ -30,6 +30,8 @@ protected:
     void GetPlaylists();
     void SelectPlaylist();
 
+    BOOL OnInitDialog();
+
     RegMap m_reg;
     std::vector<tstring> m_playlists;
     //std::vector<ITID> m_plids;
@@ -48,4 +50,9 @@ protected:
 	CSliderCtrl m_secondsSlider;
 public:
 	afx_msg void OnBnClickedIncreaseCheck();
+protected:
+    CEdit m_snoozeTime;
+    CSpinButtonCtrl m_snoozeSpin;
+public:
+    afx_msg void OnBnClickedEnableSnooze();
 };
