@@ -187,6 +187,9 @@
 			<File
 				RelativePath=".\SystemTray.cpp">
 			</File>
+			<File
+				RelativePath=".\ToolTipButton.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -221,6 +224,9 @@
 			</File>
 			<File
 				RelativePath=".\SystemTray.h">
+			</File>
+			<File
+				RelativePath=".\ToolTipButton.h">
 			</File>
 			<File
 				RelativePath=".\utf8.h">

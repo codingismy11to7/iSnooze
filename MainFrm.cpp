@@ -20,6 +20,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(WM_ICON_NOTIFY, OnTrayNotification)
     ON_MESSAGE(WM_CONFIG_UPDATE, OnConfigUpdate)
     ON_MESSAGE(WM_DO_ALARM, DoAlarm)
+	ON_MESSAGE(WM_SET_VOLUME, OnSetVolume)
 	ON_WM_CLOSE()
 	ON_WM_CANCELMODE()
 	ON_COMMAND(ID_APP_CONFIGURE, OnAppConfigure)
@@ -42,6 +43,19 @@ DWORD WINAPI TimerThread( LPVOID param )
     return 0;
 }
 
+DWORD WINAPI VolumeThread( LPVOID param )
+{
+	CMainFrame *caller = (CMainFrame*)param;
+	int wait = 10 * caller->getVolumeLength(); //1000 ms per second, 100 steps
+	for( int i = 0; i < 100; i++ )
+	{
+		Sleep( wait );
+		caller->setVolume( i + 1 );
+	}
+	caller->closeITI();
+	return 0;
+}
+
 // CMainFrame construction/destruction
 
 CMainFrame::CMainFrame()
@@ -56,8 +70,10 @@ CMainFrame::CMainFrame()
 
     m_mainThread = GetCurrentThreadId();
 
-    MSG t;
-    PeekMessage(&t, NULL, WM_USER, WM_USER, PM_NOREMOVE);
+    //MSG t;
+    //PeekMessage(&t, NULL, WM_USER, WM_USER, PM_NOREMOVE);
+
+	InitReg();
 
     CreateThread( NULL, 0, TimerThread, this, 0, NULL );
 }
@@ -73,9 +89,24 @@ void CMainFrame::timeCheck()
     GetLocalTime( &time );
     if( time.wHour == m_hour && time.wMinute == m_minute )
     {
-        ::PostMessage( GetSafeHwnd(), WM_DO_ALARM, 0, 0 );
-        //PostThreadMessage( m_mainThread, WM_DO_ALARM, 0, 0 );
+		PostMessage( WM_DO_ALARM, 0, 0 );
     }
+}
+
+void CMainFrame::setVolume( UINT level )
+{
+	PostMessage(WM_SET_VOLUME, level, 0);
+}
+
+LRESULT CMainFrame::OnSetVolume(UINT wParam, LONG lParam)
+{
+ 	ITI::SetVolume( wParam );
+	return 1;
+}
+
+void CMainFrame::closeITI()
+{
+	ITI::Disconnect();
 }
 
 LRESULT CMainFrame::DoAlarm(UINT wParam, LONG lParam)
@@ -94,6 +125,17 @@ LRESULT CMainFrame::DoAlarm(UINT wParam, LONG lParam)
         MessageBox( e.error().c_str() );
     }
 
+	try
+	{
+		ITI::Connect();
+		ITI::ZeroVolume();
+		CreateThread( NULL, 0, VolumeThread, this, 0, NULL );
+	}
+	catch( trterror &e )
+	{
+		MessageBox( e.error().c_str() );
+	}
+
     return 1;
 }
 
@@ -110,7 +152,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	return TRUE;
 }
 
-void CMainFrame::LoadReg()
+void CMainFrame::InitReg()
 {
     if( !m_reg.has_key( _T("Hour") ) )
         m_reg[_T("Hour")] = (DWORD)8;
@@ -121,11 +163,21 @@ void CMainFrame::LoadReg()
         m_reg[_T("PlaylistName")] = _T("");//b;
     if( !m_reg.has_key( _T("Shuffle") ) )
         m_reg[_T("Shuffle")] = (DWORD)0;
-    m_hour = m_reg[_T("Hour")];
+	if( !m_reg.has_key( _T("IncreaseVolume") ) )
+		m_reg[_T("IncreaseVolume")] = (DWORD)0;
+	if( !m_reg.has_key( _T("IncreaseTime") ) )
+		m_reg[_T("IncreaseTime")] = (DWORD)10;
+}
+
+void CMainFrame::LoadReg()
+{
+	m_hour = m_reg[_T("Hour")];
     m_minute = m_reg[_T("Minute")];
     m_shuffle = (m_reg[_T("Shuffle")] != 0);
     //m_pls.fromBin( ((binary)m_reg[_T("Playlist")]).data.c_str() );
     m_pls = m_reg[_T("PlaylistName")];
+	m_increase = ( (m_reg[_T("IncreaseVolume")] == 0) ) ? false : true;
+	m_inclength = m_reg[_T("IncreaseTime")];
 }
 
 // CMainFrame diagnostics

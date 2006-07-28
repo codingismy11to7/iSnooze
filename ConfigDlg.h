@@ -2,6 +2,9 @@
 
 #include "RegMap.h"
 #include "ITI.h"
+#include "ToolTipButton.h"
+#include "afxwin.h"
+#include "afxcmn.h"
 
 // CConfigDlg dialog
 
@@ -37,4 +40,11 @@ protected:
 public:
     afx_msg void OnBnClickedButton1();
     afx_msg void OnBnClickedOk();
+	//afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar);
+	afx_msg void OnNeedText(NMHDR *pnmh, LRESULT *pResult);
+protected:
+	CToolTipButton m_increase;
+	CSliderCtrl m_secondsSlider;
+public:
+	afx_msg void OnBnClickedIncreaseCheck();
 };

@@ -12,10 +12,23 @@ IMPLEMENT_DYNAMIC(CConfigDlg, CDialog)
 CConfigDlg::CConfigDlg(const RegMap &reg, CWnd* pParent /*=NULL*/)
 	: m_reg(reg)
 {
-    Create( CConfigDlg::IDD, pParent );
+	Create( CConfigDlg::IDD, pParent );
+
+	CString tip;
+	tip.LoadString( IDS_INCREASE_TIP );
+	m_increase.SetToolTipText( &tip );
+
     GetPlaylists();
     FillBoxes();
     m_parentHwnd = pParent->GetSafeHwnd();
+
+
+	CSliderCtrl *secs = (CSliderCtrl*)GetDlgItem( IDC_SECONDS_SLIDER );
+
+	secs->SetPageSize( 10 );
+	secs->SetRangeMin( 10 );
+	secs->SetRangeMax( 120 );
+	secs->EnableWindow( false );
 }
 
 void CConfigDlg::LoadFromReg()
@@ -38,6 +51,10 @@ void CConfigDlg::LoadFromReg()
         shuffle->SetCheck( BST_UNCHECKED );
     else
         shuffle->SetCheck( BST_CHECKED );
+
+	m_secondsSlider.SetPos( m_reg[_T("IncreaseTime")] );
+	m_increase.SetCheck( ((((int)m_reg[_T("IncreaseVolume")]) == 0) ? BST_UNCHECKED : BST_CHECKED) );
+	OnBnClickedIncreaseCheck();
 }
 
 void CConfigDlg::SelectPlaylist()
@@ -78,19 +95,25 @@ void CConfigDlg::FillBoxes()
 
 CConfigDlg::~CConfigDlg()
 {
+	delete m_increase;
 }
 
 void CConfigDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_INCREASE_CHECK, m_increase);
+	DDX_Control(pDX, IDC_SECONDS_SLIDER, m_secondsSlider);
 }
 
 
 BEGIN_MESSAGE_MAP(CConfigDlg, CDialog)
     ON_BN_CLICKED(IDC_BUTTON1, OnBnClickedButton1)
     ON_BN_CLICKED(IDOK, OnBnClickedOk)
+	ON_NOTIFY(TTN_NEEDTEXT, NULL, OnNeedText)
+	ON_BN_CLICKED(IDC_INCREASE_CHECK, OnBnClickedIncreaseCheck)
 END_MESSAGE_MAP()
 
+//	ON_WM_HSCROLL()
 
 // CConfigDlg message handlers
 
@@ -144,7 +167,28 @@ void CConfigDlg::OnBnClickedOk()
     else
         m_reg[_T("Shuffle")] = (DWORD)0;
 
+
+	m_reg[_T("IncreaseVolume")] = ( m_increase.GetCheck() == BST_CHECKED ) ? (DWORD)1 : (DWORD)0;
+	m_reg[_T("IncreaseTime")] = m_secondsSlider.GetPos();
+
     ::PostMessage( m_parentHwnd, WM_CONFIG_UPDATE, 0, 0 );
 
     OnOK();
+}
+
+
+void CConfigDlg::OnNeedText(NMHDR *pnmh, LRESULT *pResult)
+{
+	TOOLTIPTEXT *ttt = (TOOLTIPTEXT*)pnmh;
+	if( ttt->hdr.idFrom == (UINT) m_secondsSlider.GetSafeHwnd() )
+	{
+		TCHAR buf[20];
+		_stprintf( buf, _T("%d Seconds"), m_secondsSlider.GetPos() );
+		_tcscpy( ttt->szText, buf );
+	}
+}
+
+void CConfigDlg::OnBnClickedIncreaseCheck()
+{
+	m_secondsSlider.EnableWindow( ( (m_increase.GetCheck() == BST_CHECKED) ? true : false ) );
 }

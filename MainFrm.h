@@ -10,6 +10,7 @@
 #define WM_ICON_NOTIFY  WM_APP+10
 #define WM_CONFIG_UPDATE WM_APP+11
 #define WM_DO_ALARM WM_APP+12
+#define WM_SET_VOLUME WM_APP+13
 
 class CMainFrame : public CFrameWnd
 {
@@ -39,6 +40,10 @@ public:
 #endif
 	
     void timeCheck();
+	void setVolume( UINT level );
+	void closeITI();
+	int getVolumeLength()
+	{ return m_inclength; }
 
 	void StartTray();
 
@@ -52,10 +57,13 @@ protected:
     long m_minute;
     tstring m_pls;
     bool m_shuffle;
+	bool m_increase;
+	int m_inclength;
 
     DWORD m_mainThread;
 
     void LoadReg();
+	void InitReg();
 
 	afx_msg void OnFileClose();
 	afx_msg void OnClose();
@@ -64,6 +72,7 @@ public:
 	afx_msg LRESULT OnTrayNotification(UINT wParam, LONG lParam);
     afx_msg LRESULT OnConfigUpdate(UINT wParam, LONG lParam);
     afx_msg LRESULT DoAlarm(UINT wParam, LONG lParam);
+	afx_msg LRESULT OnSetVolume(UINT wParam, LONG lParam);
 	afx_msg void OnAppConfigure();
 	afx_msg void OnPoopTestbubble();
     afx_msg void OnTestLaunch();

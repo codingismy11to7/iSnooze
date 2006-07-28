@@ -143,7 +143,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
 END
 
-IDD_CONFIG_DIALOG DIALOGEX 0, 0, 199, 85
+IDD_CONFIG_DIALOG DIALOGEX 0, 0, 199, 134
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "Configure"
@@ -158,11 +158,15 @@ BEGIN
     CONTROL         ":",IDC_STATIC,"Static",SS_SIMPLE | WS_GROUP,78,17,8,8,
                     WS_EX_TRANSPARENT
     LTEXT           "Time: ",IDC_STATIC,16,18,20,8
-    PUSHBUTTON      "&Refresh",IDC_BUTTON1,108,64,50,14
+    PUSHBUTTON      "&Refresh",IDC_BUTTON1,107,64,50,14
     COMBOBOX        IDC_PLAYLISTS,12,46,175,69,CBS_DROPDOWNLIST | WS_VSCROLL | 
                     WS_TABSTOP
     CONTROL         "&Shuffle Play",IDC_CHECK_SHUFFLE,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,39,65,55,11
+    CONTROL         "",IDC_SECONDS_SLIDER,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_TOOLTIPS | WS_TABSTOP,70,84,122,27
+    CONTROL         "&Increase\nVolume",IDC_INCREASE_CHECK,"Button",
+                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,15,86,47,19
 END
 
 
@@ -188,13 +192,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "TODO: <Company name>"
-            VALUE "FileDescription", "TODO: <File description>"
+            VALUE "CompanyName", "Progoth.com"
+            VALUE "FileDescription", "iTunesAlarm Executable"
             VALUE "FileVersion", "1.0.0.1"
             VALUE "InternalName", "iTunesAlarm.exe"
-            VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
+            VALUE "LegalCopyright", "(c) 2004, Steven Scott.  All rights reserved."
             VALUE "OriginalFilename", "iTunesAlarm.exe"
-            VALUE "ProductName", "TODO: <Product name>"
+            VALUE "ProductName", "iTunes Alarm"
             VALUE "ProductVersion", "1.0.0.1"
         END
     END
@@ -226,7 +230,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 192
         TOPMARGIN, 7
-        BOTTOMMARGIN, 78
+        BOTTOMMARGIN, 127
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -426,6 +430,7 @@ END
 STRINGTABLE 
 BEGIN
     IDR_MAINFRAME           "iTunesAlarm"
+    IDS_INCREASE_TIP        "This increases iTunes' volume from 0% to 100% in the specified number of seconds."
 END
 
 STRINGTABLE 

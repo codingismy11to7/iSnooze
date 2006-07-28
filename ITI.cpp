@@ -132,3 +132,9 @@ void ITI::playPlaylist( const tstring &plname, bool shuffle )
     playlists->Release();
     libSource->Release();
 }
+
+void ITI::setVolume( UINT level )
+{
+	if( level <= 100 )
+		m_iTunesApp->put_SoundVolume( level );
+}
