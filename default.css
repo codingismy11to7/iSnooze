@@ -19,6 +19,12 @@ a:hover, span.features:hover {
   text-decoration: underline;
 }
 
+.icon {
+  margin-top: 3px;
+  margin-bottom: -4px;
+  margin-right: 4px;
+}
+
 div {
   display: block;
 }
