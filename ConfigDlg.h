@@ -52,7 +52,7 @@ protected:
 
     RegMap m_reg;
     std::vector<tstring> m_playlists;
-    //std::vector<ITID> m_plids;
+    std::vector<ITID> m_plids;
 
     HWND m_parentHwnd;
 

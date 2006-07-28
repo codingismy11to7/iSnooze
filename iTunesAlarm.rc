@@ -144,7 +144,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
 END
 
-IDD_CONFIG_DIALOG DIALOGEX 0, 0, 199, 189
+IDD_CONFIG_DIALOG DIALOGEX 0, 0, 199, 244
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "Configure"
@@ -155,37 +155,52 @@ BEGIN
                     WS_TABSTOP
     COMBOBOX        IDC_MINS,81,16,27,94,CBS_DROPDOWNLIST | WS_VSCROLL | 
                     WS_TABSTOP
-    COMBOBOX        IDC_PLAYLISTS,12,46,175,69,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
+    CONTROL         ":",IDC_STATIC,"Static",SS_SIMPLE | WS_GROUP,78,17,8,8,
+                    WS_EX_TRANSPARENT
+    GROUPBOX        "&Days",IDC_STATIC,16,42,168,52
+    CONTROL         "Sunday",IDC_SUNDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_GROUP | WS_TABSTOP,23,52,40,10
+    CONTROL         "Monday",IDC_MONDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,80,52,41,10
+    CONTROL         "Tuesday",IDC_TUESDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,138,52,43,10
+    CONTROL         "Wednesday",IDC_WEDNESDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,23,66,54,10
+    CONTROL         "Thursday",IDC_THURSDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,80,66,46,10
+    CONTROL         "Friday",IDC_FRIDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,138,66,36,10
+    CONTROL         "Saturday",IDC_SATURDAY_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,23,80,45,10
+    COMBOBOX        IDC_PLAYLISTS,12,101,175,69,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Shuffle Play",IDC_CHECK_SHUFFLE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,40,65,55,11
-    PUSHBUTTON      "Re&fresh",IDC_BUTTON1,108,64,50,14
+                    BS_AUTOCHECKBOX | WS_TABSTOP,40,120,55,11
+    PUSHBUTTON      "Re&fresh",IDC_BUTTON1,108,119,50,14
     CONTROL         "&Increase\nVolume",IDC_INCREASE_CHECK,"Button",
-                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,15,86,47,19
+                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,15,141,47,19
     CONTROL         "",IDC_SECONDS_SLIDER,"msctls_trackbar32",TBS_BOTH | 
-                    TBS_TOOLTIPS | WS_TABSTOP,70,84,122,27
+                    TBS_TOOLTIPS | WS_TABSTOP,70,139,122,27
     CONTROL         "&Minimize iTunes\non Alarm",IDC_MINIMIZE_CHECK,"Button",
-                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,15,114,67,20
+                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,15,169,67,20
     CONTROL         "&Run iTunesAlarm\nat Startup",IDC_STARTUP_CHECK,"Button",
-                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,107,114,67,
+                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,107,169,67,
                     20
     CONTROL         "&Enable Snooze",IDC_ENABLE_SNOOZE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,15,141,63,10
+                    BS_AUTOCHECKBOX | WS_TABSTOP,15,196,63,10
     CONTROL         "Pause on \nComputer &Access",IDC_DO_MUTE,"Button",
-                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,107,138,73,
+                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,107,193,73,
                     16
-    LTEXT           "S&nooze Time:",IDC_SNOOZE_LABEL,45,166,46,8,0,
+    LTEXT           "S&nooze Time:",IDC_SNOOZE_LABEL,45,221,46,8,0,
                     WS_EX_RIGHT
-    EDITTEXT        IDC_SNOOZE_TIME,94,164,30,14,ES_RIGHT | ES_AUTOHSCROLL | 
+    EDITTEXT        IDC_SNOOZE_TIME,94,219,30,14,ES_RIGHT | ES_AUTOHSCROLL | 
                     ES_NUMBER
     CONTROL         "",IDC_SNOOZE_SPIN,"msctls_updown32",UDS_SETBUDDYINT | 
-                    UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,124,164,
+                    UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,124,219,
                     11,14
     DEFPUSHBUTTON   "&OK",IDOK,142,7,50,14
     PUSHBUTTON      "&Cancel",IDCANCEL,142,24,50,14
-    CONTROL         ":",IDC_STATIC,"Static",SS_SIMPLE | WS_GROUP,78,17,8,8,
-                    WS_EX_TRANSPARENT
-    LTEXT           "minutes",IDC_SNOOZE_LABEL2,127,166,26,8
+    LTEXT           "minutes",IDC_SNOOZE_LABEL2,127,221,26,8
 END
 
 IDD_SNOOZE_DIALOG DIALOGEX 0, 0, 154, 74
@@ -260,7 +275,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 192
         TOPMARGIN, 7
-        BOTTOMMARGIN, 182
+        BOTTOMMARGIN, 237
     END
 
     IDD_SNOOZE_DIALOG, DIALOG

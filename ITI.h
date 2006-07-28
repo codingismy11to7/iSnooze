@@ -54,10 +54,10 @@ public:
     { ITI::instance()->connect(); }
     static void Disconnect()
     { ITI::instance()->disconnect(); }
-    static void GetPlaylists( std::vector<tstring> &out/*, std::vector<ITID> &outid*/ )
-    { ITI::instance()->getPlaylists( out/*, outid*/ ); }
-    static void PlayPlaylist( const tstring &plname, bool shuffle = false )
-    { ITI::instance()->playPlaylist( plname, shuffle ); }
+    static void GetPlaylists( std::vector<tstring> &out, std::vector<ITID> &outid )
+    { ITI::instance()->getPlaylists( out, outid ); }
+    static void PlayPlaylist( const ITID &plid, const tstring &plname, bool shuffle = false )
+    { ITI::instance()->playPlaylist( plid, plname, shuffle ); }
 	static void SetVolume( UINT level )
 	{ ITI::instance()->setVolume( level ); }
 	static void ZeroVolume()
@@ -81,8 +81,8 @@ private:
 
     void connect();
     void disconnect();
-    void getPlaylists( std::vector<tstring> &out/*, std::vector<ITID> &outid*/ );
-    void playPlaylist( const tstring &plname, bool shuffle );
+    void getPlaylists( std::vector<tstring> &out, std::vector<ITID> &outid );
+    void playPlaylist( const ITID &plid, const tstring &plname, bool shuffle );
 	void setVolume( UINT level );
 	void zeroVolume()
 	{ m_iTunesApp->put_SoundVolume(0); }

@@ -243,7 +243,7 @@ LRESULT CMainFrame::DoAlarm(UINT wParam, LONG lParam)
 
         ITI::Connect();
         if( m_minimize ) ITI::Minimize();
-        ITI::PlayPlaylist( m_pls, m_shuffle );
+        ITI::PlayPlaylist( m_pls, m_plsname, m_shuffle );
         ITI::Disconnect();
 
         if( m_muteOnRet )
@@ -313,9 +313,11 @@ void CMainFrame::InitReg()
         m_reg[_T("Hour")] = (DWORD)8;
     if( !m_reg.has_key( _T("Minute") ) )
         m_reg[_T("Minute")] = (DWORD)0;
-    //binary b;
+    binary b;
+    if( !m_reg.has_key( _T("Playlist") ) )
+        m_reg[_T("Playlist")] = b;
     if( !m_reg.has_key( _T("PlaylistName") ) )
-        m_reg[_T("PlaylistName")] = _T("");//b;
+        m_reg[_T("PlaylistName")] = _T("");
     if( !m_reg.has_key( _T("Shuffle") ) )
         m_reg[_T("Shuffle")] = false;
 	if( !m_reg.has_key( _T("IncreaseVolume") ) )
@@ -346,8 +348,8 @@ void CMainFrame::LoadReg()
 	m_hour = m_reg[_T("Hour")];
     m_minute = m_reg[_T("Minute")];
     m_shuffle = m_reg[_T("Shuffle")];
-    //m_pls.fromBin( ((binary)m_reg[_T("Playlist")]).data.c_str() );
-    m_pls = m_reg[_T("PlaylistName")];
+    m_pls.fromBin( ((binary)m_reg[_T("Playlist")]).data.c_str() );
+    m_plsname = m_reg[_T("PlaylistName")];
 	m_increase = m_reg[_T("IncreaseVolume")];
 	m_inclength = m_reg[_T("IncreaseTime")];
     m_minimize = m_reg[_T("MinimizeOnAlarm")];

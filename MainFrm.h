@@ -86,7 +86,8 @@ protected:
     long m_thour;
     long m_tminute;
     bool m_snoozing;
-    tstring m_pls;
+    ITID m_pls;
+	tstring m_plsname;
     bool m_shuffle;
 	bool m_increase;
     bool m_minimize;

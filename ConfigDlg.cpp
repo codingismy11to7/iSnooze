@@ -113,15 +113,25 @@ void CConfigDlg::LoadFromReg()
 void CConfigDlg::SelectPlaylist()
 {
     CComboBox *playlists = (CComboBox*)GetDlgItem( IDC_PLAYLISTS );
-    //ITID cur;
-    //cur.fromBin( ((binary)(m_reg[_T("Playlist")])).data.c_str() );
-    tstring cur = m_reg[_T("PlaylistName")];
+    ITID cur;
+    cur.fromBin( ((binary)(m_reg[_T("Playlist")])).data.c_str() );
+    tstring curstr = m_reg[_T("PlaylistName")];
+	bool found = false;
     for( ULONG j = 0; j < m_playlists.size(); j++ )
     {
-        //if( cur == m_plids[j] )
-        if( cur == m_playlists[j] )
+        if( cur == m_plids[j] )
+        //if( cur == m_playlists[j] )
+		{
             playlists->SetCurSel( j );
+			found = true;
+		}
     }
+	if( found ) return;
+	for( ULONG j = 0; j < m_playlists.size(); j++ )
+	{
+		if( curstr == m_playlists[j] )
+			playlists->SetCurSel( j );
+	}
 }
 
 void CConfigDlg::FillBoxes()
@@ -181,7 +191,7 @@ void CConfigDlg::GetPlaylists()
     //m_playlists.push_back(_T("Playlist 2"));
 	try {
 		ITI::Connect();
-		ITI::GetPlaylists( m_playlists/*, m_plids*/ );
+		ITI::GetPlaylists( m_playlists, m_plids );
 		ITI::Disconnect();
 	}
 	catch( trterror &e )
@@ -217,11 +227,11 @@ void CConfigDlg::OnBnClickedOk()
     int pl = playlists->GetCurSel();
     if( pl != -1 )
     {
-        /*long id[4];
+        long id[4];
         m_plids[pl].toBin( (void*)id );
         binary b;
         b.data = std::string( (char*)id, 4 * sizeof(long) );
-        m_reg[_T("Playlist")] = b;*/
+        m_reg[_T("Playlist")] = b;
         m_reg[_T("PlaylistName")] = m_playlists[pl];
     }
 

@@ -33,6 +33,14 @@
 #define IDC_SNOOZE_SPIN                 1020
 #define IDC_SNOOZE_LABEL2               1021
 #define IDC_SNOOZE_LABEL                1022
+#define IDC_SUNDAY_CHECK                1023
+#define IDC_WEDNESDAY_CHECK             1024
+#define IDC_SUNDAY_CHECK3               1025
+#define IDC_SATURDAY_CHECK              1025
+#define IDC_MONDAY_CHECK                1026
+#define IDC_THURSDAY_CHECK              1027
+#define IDC_FRIDAY_CHECK                1028
+#define IDC_TUESDAY_CHECK               1029
 #define ID_POOP_TEST                    32773
 #define ID_APP_CONFIGURE                32774
 #define ID_POOP_TESTBUBBLE              32775
@@ -46,7 +54,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        139
 #define _APS_NEXT_COMMAND_VALUE         32782
-#define _APS_NEXT_CONTROL_VALUE         1023
+#define _APS_NEXT_CONTROL_VALUE         1024
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

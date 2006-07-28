@@ -56,7 +56,7 @@ void ITI::disconnect()
 	LeaveCriticalSection( &ITI::cs );
 }
 
-void ITI::getPlaylists( std::vector<tstring> &out/*, std::vector<ITID> &outids*/ )
+void ITI::getPlaylists( std::vector<tstring> &out, std::vector<ITID> &outids )
 {
     IITSource *libSource;
     if( FAILED(m_iTunesApp->get_LibrarySource( &libSource )) )
@@ -102,16 +102,16 @@ void ITI::getPlaylists( std::vector<tstring> &out/*, std::vector<ITID> &outids*/
 
         if( t != _T("Library") && t != _T("Party Shuffle") )
         {
-            /*if( FAILED(pl->GetITObjectIDs( &id.sourceID, &id.playlistID, &id.trackID, &id.databaseID )) )
+            if( FAILED(pl->GetITObjectIDs( &id.sourceID, &id.playlistID, &id.trackID, &id.databaseID )) )
             {
                 pl->Release();
                 playlists->Release();
                 libSource->Release();
                 return;
-            }*/
+            }
 
             out.push_back( t );
-            //outids.push_back( id );
+            outids.push_back( id );
         }
 
         pl->Release();
@@ -121,25 +121,30 @@ void ITI::getPlaylists( std::vector<tstring> &out/*, std::vector<ITID> &outids*/
     libSource->Release();
 }
 
-void ITI::playPlaylist( const tstring &plname, bool shuffle )
+void ITI::playPlaylist( const ITID &plid, const tstring &plname, bool shuffle )
 {
-    /*IITPlaylist *pl;
+    IITPlaylist *pl;
     IITObject *tmp;
-    if( FAILED(m_iTunesApp->GetITObjectByID( plid.sourceID, plid.playlistID, plid.trackID, plid.databaseID,
-        &tmp )) )
-        return;
-    if( FAILED(tmp->QueryInterface( IID_IITPlaylist, (void**)&pl )) )
-    {
-        tmp->Release();
-        return;
-    }
+	if( m_iTunesApp->GetITObjectByID( plid.sourceID, plid.playlistID, plid.trackID, plid.databaseID, &tmp ) == S_OK )
+	{
+		if( SUCCEEDED(tmp->QueryInterface( IID_IITPlaylist, (void**)&pl )) )
+		{
+			pl->put_Shuffle( shuffle );
+			m_iTunesApp->Stop();
+			pl->PlayFirstTrack();
 
-    pl->put_Shuffle( shuffle );
-    pl->PlayFirstTrack();
+			pl->Release();
+			tmp->Release();
+			return;
+		}
+		else
+		{
+			tmp->Release();
+		}
+	}
 
-    pl->Release();
-    tmp->Release();*/
-    IITSource *libSource;
+    
+	IITSource *libSource;
     if( FAILED(m_iTunesApp->get_LibrarySource( &libSource )) )
         return;
 
@@ -150,11 +155,11 @@ void ITI::playPlaylist( const tstring &plname, bool shuffle )
         return;
     }
 
-    IITPlaylist *pl;
-    BSTR tmp = SysAllocString( plname.c_str() );
-    if( FAILED(playlists->get_ItemByName( tmp, &pl )) )
+    //IITPlaylist *pl;
+    BSTR tmps = SysAllocString( plname.c_str() );
+    if( FAILED(playlists->get_ItemByName( tmps, &pl )) )
     {
-        SysFreeString( tmp );
+        SysFreeString( tmps );
         playlists->Release();
         libSource->Release();
         return;
@@ -165,7 +170,7 @@ void ITI::playPlaylist( const tstring &plname, bool shuffle )
     pl->PlayFirstTrack();
 
     pl->Release();
-    SysFreeString( tmp );
+    SysFreeString( tmps );
     playlists->Release();
     libSource->Release();
 }
