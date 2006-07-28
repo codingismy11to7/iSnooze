@@ -33,10 +33,10 @@ CConfigDlg::CConfigDlg(const RegMap &reg, CWnd* pParent /*=NULL*/)
 
 void CConfigDlg::LoadFromReg()
 {
-    long id[4];
+    /*long id[4];
     memset( id, 0, 4 * sizeof(long) );
     binary b;
-    b.data = std::string( (char*)id, 4 * sizeof(long) );
+    b.data = std::string( (char*)id, 4 * sizeof(long) );*/
 
     CComboBox *hours = (CComboBox*)GetDlgItem( IDC_HOURS );
     hours->SetCurSel( m_reg[_T("Hour")] );

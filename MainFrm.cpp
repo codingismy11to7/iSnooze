@@ -100,6 +100,7 @@ void CMainFrame::setVolume( UINT level )
 
 LRESULT CMainFrame::OnSetVolume(UINT wParam, LONG lParam)
 {
+	if( GetCurrentThreadId() != m_mainThread ) return 1;
  	ITI::SetVolume( wParam );
 	return 1;
 }

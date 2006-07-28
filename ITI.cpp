@@ -1,7 +1,9 @@
 #include "StdAfx.h"
 #include ".\iti.h"
 
-ITI* ITI::m_inst = NULL;
+ITI* ITI::inst = NULL;
+long ITI::refcount = 0;
+CRITICAL_SECTION ITI::cs;
 
 ITI::~ITI()
 {
@@ -9,14 +11,30 @@ ITI::~ITI()
 
 void ITI::connect()
 {
-    if( FAILED(::CoCreateInstance( CLSID_iTunesApp, NULL, CLSCTX_LOCAL_SERVER, 
-        IID_IiTunes, (void**)&m_iTunesApp )) )
-        throw trterror( _T("couldn't start itunes interface") );
+	EnterCriticalSection(&ITI::cs);
+	if( !m_iTunesApp )
+	{
+		if( FAILED(::CoCreateInstance( CLSID_iTunesApp, NULL, CLSCTX_LOCAL_SERVER, 
+			IID_IiTunes, (void**)&m_iTunesApp )) )
+		{
+			LeaveCriticalSection( &ITI::cs );
+			throw trterror( _T("couldn't start itunes interface") );
+		}
+	}
+
+	ITI::refcount++;
+	LeaveCriticalSection( &ITI::cs );
 }
 
 void ITI::disconnect()
 {
-    m_iTunesApp->Release();
+	EnterCriticalSection( &ITI::cs );
+	if( --refcount == 0 )
+	{
+		m_iTunesApp->Release();
+		m_iTunesApp = NULL;
+	}
+	LeaveCriticalSection( &ITI::cs );
 }
 
 void ITI::getPlaylists( std::vector<tstring> &out/*, std::vector<ITID> &outids*/ )

@@ -51,7 +51,7 @@ private:
     ITI():m_iTunesApp(NULL){}
 
 	static ITI *instance()
-	{ if( !m_inst ) m_inst = new ITI; return m_inst; }
+	{ if( !inst ) inst = new ITI; InitializeCriticalSection(&ITI::cs); return inst; }
 
     void connect();
     void disconnect();
@@ -61,6 +61,8 @@ private:
 	void zeroVolume()
 	{ m_iTunesApp->put_SoundVolume(0); }
 
-	static ITI *m_inst;
+	static ITI *inst;
+	static long refcount;
+	static CRITICAL_SECTION cs;
     IiTunes* m_iTunesApp;
 };
