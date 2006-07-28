@@ -64,6 +64,6 @@ BOOL CAboutDlg::OnInitDialog(void)
 
 void CAboutDlg::OnBnClickedPaypal()
 {
-	ShellExecute( GetSafeHwnd(), _T("open"), _T("https://www.paypal.com/xclick/business=progoth%40gmail.com&no_shipping=1&no_note=1&tax=0&currency_code=USD"),
+	ShellExecute( GetSafeHwnd(), _T("open"), _T("https://www.paypal.com/xclick/business=progoth%40gmail.com&no_shipping=1&item_name=Donation%20to%20iTunesAlarm!&no_note=1&tax=0&currency_code=USD"),
 		NULL, NULL, 0 );
 }
