@@ -24,6 +24,8 @@
 #include "SystemTray.h"
 #include "ConfigDlg.h"
 
+#include <list>
+
 #define WM_ICON_NOTIFY  WM_APP+10
 #define WM_CONFIG_UPDATE WM_APP+11
 #define WM_DO_ALARM WM_APP+12
@@ -103,6 +105,8 @@ protected:
 	bool m_alarmEnabled;
 
     DWORD m_mainThread;
+
+	std::vector< std::list<DayTime::TimeAndDays*> > m_alarms;
 
     void LoadReg();
 	void InitReg();

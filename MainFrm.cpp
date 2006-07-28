@@ -136,7 +136,7 @@ DWORD WINAPI CheckForAway( LPVOID param )
 // CMainFrame construction/destruction
 
 CMainFrame::CMainFrame()
-: m_config(NULL), m_snoozing(false)
+: m_config(NULL), m_snoozing(false), m_alarms(7)
 {
 	m_reg = RegMap( HKEY_CURRENT_USER )[_T("Software")];
 	if( !m_reg.has_key( _T("iTunesAlarm") ) )
@@ -356,6 +356,20 @@ void CMainFrame::LoadReg()
 {
 	/*m_hour = m_reg[_T("Hour")];
     m_minute = m_reg[_T("Minute")];*/
+	DayTime::AlarmList al;
+	DayTime::binToCont( ((binary)m_reg[_T("Alarms")]).data, al );
+
+	DayTime::AlarmList::const_iterator i, end = al.end();
+	for( UINT j = 0; j < 7; j++ )
+	{
+		DayTime::cleanList( m_alarms[j] );
+		for( i = al.begin(); i != end; ++i )
+		{
+			if( DayTime::Win2DayTime[j] & (*i).day )
+				DayTime::addSorted( *i, m_alarms[j] );
+		}
+	}
+
 	m_alarmTime.setFromBinary( ((binary)m_reg[_T("AlarmTime")]).data.c_str() );
     m_shuffle = m_reg[_T("Shuffle")];
     m_pls.fromBin( ((binary)m_reg[_T("Playlist")]).data.c_str() );

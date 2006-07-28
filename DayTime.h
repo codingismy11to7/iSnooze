@@ -19,6 +19,7 @@
 #pragma once
 
 #include <vector>
+#include <list>
 #include "t.h"
 
 namespace DayTime {
@@ -36,12 +37,12 @@ namespace DayTime {
 
 	const unsigned char Win2DayTime[] = {SUNDAY,MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY};
 
-
 	class TimeAndDays
 	{
 	public:
 		TimeAndDays():time(0), day(0){}
 		TimeAndDays( int hour, int minute, BYTE days );
+		TimeAndDays( const SYSTEMTIME &st );
 
 		void setTime( int hour, int minute );
 
@@ -78,9 +79,18 @@ namespace DayTime {
 
 
 		bool operator==(const TimeAndDays& o) const;
+
+		// only compares Time, fine for my purposes
+		bool operator < ( const TimeAndDays& o ) const;
+		bool operator > ( const TimeAndDays& o ) const;
 	};
 
-	extern void contToBin( const std::vector<TimeAndDays> &in, std::string &out );
-	extern void binToCont( const std::string &in, std::vector<TimeAndDays> &out );
+	typedef std::vector< TimeAndDays > AlarmList;
+
+	extern void contToBin( const AlarmList &in, std::string &out );
+	extern void binToCont( const std::string &in, AlarmList &out );
+
+	extern void addSorted( const TimeAndDays &tm, std::list< TimeAndDays* > &list );
+	extern void cleanList( std::list< TimeAndDays* > &list );
 
 };

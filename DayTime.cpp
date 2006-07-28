@@ -28,6 +28,12 @@ TimeAndDays::TimeAndDays( int hour, int minute, BYTE days )
 	setTime( hour, minute );
 }
 
+TimeAndDays::TimeAndDays( const SYSTEMTIME &st )
+{
+	this->day = Win2DayTime[ st.wDayOfWeek ];
+	setTime( st.wHour, st.wMinute );
+}
+
 void TimeAndDays::setTime( int hour, int minute )
 {
 	time = 0;
@@ -38,6 +44,16 @@ void TimeAndDays::setTime( int hour, int minute )
 bool TimeAndDays::operator==( const TimeAndDays &o ) const
 {
 	return ((time == o.time) && (day == o.day));
+}
+
+bool TimeAndDays::operator < ( const TimeAndDays& o ) const
+{
+	return ( time < o.time );
+}
+
+bool TimeAndDays::operator > ( const TimeAndDays& o ) const
+{
+	return ( time > o.time );
 }
 
 tstring TimeAndDays::getString() const
@@ -88,3 +104,26 @@ void DayTime::binToCont( const std::string &in, std::vector<TimeAndDays> &out )
 	}
 }
 
+void DayTime::addSorted( const TimeAndDays &tm, std::list< TimeAndDays* > &list )
+{
+	std::list< TimeAndDays* >::iterator i, end = list.end();
+
+	for( i = list.begin(); i != end; ++i )
+	{
+		if( (**i) > tm )
+		{
+			list.insert( i, new TimeAndDays( tm ) );
+			break;
+		}
+	}
+	if( i == end )
+		list.push_back( new TimeAndDays( tm ) );
+}
+
+void DayTime::cleanList( std::list< TimeAndDays* > &list )
+{
+	std::list< TimeAndDays* >::iterator i, end = list.end();
+	for( i = list.begin(); i != end; ++i )
+		delete (*i);
+	list.clear();
+}
