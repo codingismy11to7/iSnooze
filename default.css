@@ -1,4 +1,4 @@
-
+/*
 body {
   background: #f7fdff;
   color: #55737a;
@@ -66,4 +66,21 @@ li {
   text-align: justify;
   width: 400px;
   margin-bottom: 6px;
+}
+
+*/
+
+div.svn {
+  text-align: center;
+  font-size: x-small;
+}
+
+div.tab-page {
+  height: 100%;
+}
+
+span.features {
+  cursor: pointer;
+  text-decoration: underline;
+  color: blue;
 }
