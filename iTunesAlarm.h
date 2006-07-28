@@ -17,6 +17,8 @@ class CiTunesAlarmApp : public CWinApp
 {
 public:
 	CiTunesAlarmApp();
+    ~CiTunesAlarmApp()
+    { CoUninitialize(); }
 
 	CArray<HWND, HWND> m_aryFrames;
 public:

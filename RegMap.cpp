@@ -20,7 +20,6 @@ void RegMap::clean()
 			delete m_val.str;
 			break;
 		case BIN:
-			delete[] m_val.bin->data;
 			delete m_val.bin;
 			break;
 		case MV_SZ:
@@ -93,12 +92,14 @@ RegMap& RegMap::operator[]( const TCHAR *item ) const
             else newkey = item;
 			switch( type )
 			{
-			case REG_BINARY:
-				binary nb;
-				nb.data = buf;
-				nb.length = newbufsize;
-				m_regcache[item] = new RegMap( nb, newkey.c_str(), m_root );
-				return *(m_regcache[item]);
+            case REG_BINARY:
+                {
+                    binary nb;
+                    nb.data = std::string( (char*)buf, newbufsize );
+                    m_regcache[item] = new RegMap( nb, newkey.c_str(), m_root );
+                    delete[] buf;
+                    return *(m_regcache[item]);
+                }
 			case REG_DWORD:
 				m_regcache[item] = new RegMap( ((DWORD*)buf)[0], newkey.c_str(), m_root );
 				delete[] buf;
@@ -262,7 +263,7 @@ void RegMap::setValue( const TCHAR *parent, const TCHAR *child, const RegMap &o 
 		}
 	case BIN:
 		{
-			hr = RegSetValueEx( parentkey, child, 0, REG_BINARY, (const BYTE*)o.m_val.bin->data, o.m_val.bin->length );
+			hr = RegSetValueEx( parentkey, child, 0, REG_BINARY, (const BYTE*)(o.m_val.bin->data.c_str()), o.m_val.bin->data.size() );
 			if( hr != ERROR_SUCCESS )
 			{
 				RegCloseKey( parentkey );

@@ -1,16 +1,40 @@
 #pragma once
-#include "afxwin.h"
+
 #include "RegMap.h"
+#include "ITI.h"
 
-class CConfigDlg :
-	public CDialog
+// CConfigDlg dialog
+
+class CConfigDlg : public CDialog
 {
-public:
-	CConfigDlg( RegMap &reg, UINT id, CWnd *parent );
+	DECLARE_DYNAMIC(CConfigDlg)
 
-	void Show()
-	{ ShowWindow( SW_SHOW ); }
-	//~CConfigDlg(void);
-private:
-	RegMap m_reg;
+public:
+	CConfigDlg(const RegMap &reg, CWnd* pParent = NULL);   // standard constructor
+	virtual ~CConfigDlg();
+
+// Dialog Data
+	enum { IDD = IDD_CONFIG_DIALOG };
+
+    void Show()
+    {     LoadFromReg(); ShowWindow( SW_SHOW ); }
+
+protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+
+    void LoadFromReg();
+    void FillBoxes();
+    void GetPlaylists();
+    void SelectPlaylist();
+
+    RegMap m_reg;
+    std::vector<tstring> m_playlists;
+    //std::vector<ITID> m_plids;
+
+    HWND m_parentHwnd;
+
+	DECLARE_MESSAGE_MAP()
+public:
+    afx_msg void OnBnClickedButton1();
+    afx_msg void OnBnClickedOk();
 };

@@ -98,6 +98,7 @@ BEGIN
     BEGIN
         MENUITEM "&Configure",                  ID_APP_CONFIGURE
         MENUITEM "Test &Bubble",                ID_POOP_TESTBUBBLE
+        MENUITEM "Test &Launch",                ID_APP_TESTLAUNCH
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
     END
@@ -142,18 +143,26 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
 END
 
-IDD_CONFIG_DIALOG DIALOGEX 0, 0, 186, 90
+IDD_CONFIG_DIALOG DIALOGEX 0, 0, 199, 85
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "Configure"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
-    CONTROL         "Check1",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,27,17,39,10
-    COMBOBOX        IDC_COMBO1,25,39,87,30,CBS_DROPDOWN | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "&OK",IDOK,142,7,50,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,142,24,50,14
+    COMBOBOX        IDC_HOURS,50,16,27,94,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_MINS,81,16,27,94,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    CONTROL         ":",IDC_STATIC,"Static",SS_SIMPLE | WS_GROUP,78,17,8,8,
+                    WS_EX_TRANSPARENT
+    LTEXT           "Time: ",IDC_STATIC,16,18,20,8
+    PUSHBUTTON      "&Refresh",IDC_BUTTON1,108,64,50,14
+    COMBOBOX        IDC_PLAYLISTS,12,46,175,69,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    CONTROL         "&Shuffle Play",IDC_CHECK_SHUFFLE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,39,65,55,11
 END
 
 
@@ -215,9 +224,9 @@ BEGIN
     IDD_CONFIG_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 179
+        RIGHTMARGIN, 192
         TOPMARGIN, 7
-        BOTTOMMARGIN, 83
+        BOTTOMMARGIN, 78
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -229,6 +238,185 @@ END
 //
 
 1                       RT_MANIFEST             "res\\iTunesAlarm.manifest"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_CONFIG_DIALOG DLGINIT
+BEGIN
+    IDC_HOURS, 0x403, 3, 0
+0x3030, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3130, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3230, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3330, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3430, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3530, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3630, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3730, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3830, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3930, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3031, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3131, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3231, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3331, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3431, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3531, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3631, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3731, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3831, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3931, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3032, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3132, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3232, "\000" 
+    IDC_HOURS, 0x403, 3, 0
+0x3332, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3030, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3130, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3230, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3330, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3430, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3530, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3630, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3730, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3830, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3930, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3031, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3131, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3231, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3331, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3431, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3531, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3631, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3731, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3831, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3931, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3032, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3132, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3232, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3332, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3432, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3532, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3632, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3732, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3832, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3932, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3033, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3133, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3233, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3333, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3433, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3533, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3633, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3733, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3833, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3933, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3034, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3134, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3234, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3334, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3434, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3534, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3634, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3734, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3834, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3934, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3035, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3135, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3235, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3335, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3435, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3535, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3635, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3735, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3835, "\000" 
+    IDC_MINS, 0x403, 3, 0
+0x3935, "\000" 
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

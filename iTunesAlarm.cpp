@@ -79,6 +79,7 @@ BOOL CiTunesAlarmApp::InitInstance()
 	pFrame->StartTray();
 	// call DragAcceptFiles only if there's a suffix
 	//  In an SDI app, this should occur after ProcessShellCommand
+    CoInitializeEx( NULL, COINIT_MULTITHREADED | COINIT_SPEED_OVER_MEMORY );
 	return TRUE;
 }
 

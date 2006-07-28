@@ -3,8 +3,8 @@
 
 #include "stdafx.h"
 #include "iTunesAlarm.h"
+#include "ITI.h"
 
-#include "MainFrm.h"
 #include ".\mainfrm.h"
 
 #ifdef _DEBUG
@@ -18,12 +18,29 @@ IMPLEMENT_DYNAMIC(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(WM_ICON_NOTIFY, OnTrayNotification)
+    ON_MESSAGE(WM_CONFIG_UPDATE, OnConfigUpdate)
+    ON_MESSAGE(WM_DO_ALARM, DoAlarm)
 	ON_WM_CLOSE()
 	ON_WM_CANCELMODE()
 	ON_COMMAND(ID_APP_CONFIGURE, OnAppConfigure)
 	ON_COMMAND(ID_POOP_TESTBUBBLE, OnPoopTestbubble)
+    ON_COMMAND(ID_APP_TESTLAUNCH, OnTestLaunch)
 END_MESSAGE_MAP()
 
+DWORD WINAPI TimerThread( LPVOID param )
+{
+    CMainFrame *caller = (CMainFrame*)param;
+    SYSTEMTIME t;
+    GetLocalTime( &t );
+    if( t.wSecond )
+        Sleep( ( 60 - t.wSecond ) * 1000 ); //sleep until this minute completes
+    while( true )
+    {
+        caller->timeCheck();
+        Sleep(60000);
+    }
+    return 0;
+}
 
 // CMainFrame construction/destruction
 
@@ -34,6 +51,15 @@ CMainFrame::CMainFrame()
 	if( !m_reg.has_key( _T("iTunesAlarm") ) )
 		m_reg[_T("iTunesAlarm")] = RegMap();
 	m_reg = m_reg[_T("iTunesAlarm")];
+
+    LoadReg();
+
+    m_mainThread = GetCurrentThreadId();
+
+    MSG t;
+    PeekMessage(&t, NULL, WM_USER, WM_USER, PM_NOREMOVE);
+
+    CreateThread( NULL, 0, TimerThread, this, 0, NULL );
 }
 
 CMainFrame::~CMainFrame()
@@ -41,6 +67,35 @@ CMainFrame::~CMainFrame()
 	delete m_config;
 }
 
+void CMainFrame::timeCheck()
+{
+    static SYSTEMTIME time;
+    GetLocalTime( &time );
+    if( time.wHour == m_hour && time.wMinute == m_minute )
+    {
+        ::PostMessage( GetSafeHwnd(), WM_DO_ALARM, 0, 0 );
+        //PostThreadMessage( m_mainThread, WM_DO_ALARM, 0, 0 );
+    }
+}
+
+LRESULT CMainFrame::DoAlarm(UINT wParam, LONG lParam)
+{
+    bool y = ( m_mainThread == GetCurrentThreadId() );
+    m_systray.ShowBalloon( _T("Starting alarm, we'll see what this will do later."),
+        _T("DANGER DANGER"), NIIF_WARNING, 30 );
+    try
+    {
+        ITI::Connect();
+        ITI::PlayPlaylist( m_pls, m_shuffle );
+        ITI::Disconnect();
+    }
+    catch( trterror &e )
+    {
+        MessageBox( e.error().c_str() );
+    }
+
+    return 1;
+}
 
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
@@ -55,6 +110,23 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	return TRUE;
 }
 
+void CMainFrame::LoadReg()
+{
+    if( !m_reg.has_key( _T("Hour") ) )
+        m_reg[_T("Hour")] = (DWORD)8;
+    if( !m_reg.has_key( _T("Minute") ) )
+        m_reg[_T("Minute")] = (DWORD)0;
+    //binary b;
+    if( !m_reg.has_key( _T("PlaylistName") ) )
+        m_reg[_T("PlaylistName")] = _T("");//b;
+    if( !m_reg.has_key( _T("Shuffle") ) )
+        m_reg[_T("Shuffle")] = (DWORD)0;
+    m_hour = m_reg[_T("Hour")];
+    m_minute = m_reg[_T("Minute")];
+    m_shuffle = (m_reg[_T("Shuffle")] != 0);
+    //m_pls.fromBin( ((binary)m_reg[_T("Playlist")]).data.c_str() );
+    m_pls = m_reg[_T("PlaylistName")];
+}
 
 // CMainFrame diagnostics
 
@@ -128,29 +200,25 @@ void CMainFrame::OnClose()
 LRESULT CMainFrame::OnTrayNotification(UINT wParam, LONG lParam) 
 {
 	if( LOWORD(lParam) == NIN_BALLOONUSERCLICK )
-		MessageBox( _T("This should be a snooze dialog, or stop, or something") );
+    {
+		//MessageBox( _T("This should be a snooze dialog, or stop, or something") );
+    }
 	else
 		return m_systray.OnTrayNotification(wParam, lParam);
     return 1;
 }
 
+LRESULT CMainFrame::OnConfigUpdate(UINT wParam, LONG lParam)
+{
+    LoadReg();
+    return 1;
+}
+
 void CMainFrame::OnAppConfigure()
 {
-	//MessageBox(L"uehaon");
 	if( !m_config )
-		m_config = new CConfigDlg( m_reg, IDD_CONFIG_DIALOG, this );
-	
-	/*if( config.DoModal() == IDOK )
-	{
-		//save settings
-		CButton *chk = (CButton*)config.GetDlgItem( IDC_CHECK1 );
-		if( chk->GetCheck() == BST_CHECKED )
-			MessageBox( _T("checked") );
-		else
-			MessageBox( _T("not checked") );
-	}
-	else
-		MessageBox( _T("not saving") );*/
+		m_config = new CConfigDlg( m_reg, this );
+
 	m_config->Show();
 }
 
@@ -158,4 +226,9 @@ void CMainFrame::OnPoopTestbubble()
 {
 	m_systray.ShowBalloon( _T("This is a sample bubble popup thing.  It will most likely be used for snooze handling.  Click me!"),
 		_T("WAKE UP"), NIIF_WARNING, 30 );
+}
+
+void CMainFrame::OnTestLaunch()
+{
+    DoAlarm(0,0);
 }
