@@ -41,12 +41,15 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(WM_SET_VOLUME, OnSetVolume)
     ON_MESSAGE(WM_USER_RETURNED, OnUserReturned)
     ON_MESSAGE(WM_USER_GONE, OnUserGone)
+	ON_MESSAGE(WM_CLOSE_ITI, DoCloseITI)
 	ON_WM_CLOSE()
 	ON_WM_CANCELMODE()
 	ON_COMMAND(ID_APP_CONFIGURE, OnAppConfigure)
 	ON_COMMAND(ID_POOP_TESTBUBBLE, OnPoopTestbubble)
     ON_COMMAND(ID_APP_TESTLAUNCH, OnTestLaunch)
 	ON_COMMAND(ID_APP_ALARMENABLED, OnAlarmEnabled)
+	ON_COMMAND(ID_APP_CANCELSNOOZE, OnAppCancelsnooze)
+	ON_UPDATE_COMMAND_UI(ID_APP_CANCELSNOOZE, OnUpdateAppCancelsnooze)
 END_MESSAGE_MAP()
 
 DWORD WINAPI TimerThread( LPVOID param )
@@ -152,6 +155,8 @@ CMainFrame::CMainFrame()
 CMainFrame::~CMainFrame()
 {
 	delete m_config;
+	for( UINT j = 0; j < 7; j++ )
+		DayTime::cleanList( m_alarms[j] );
 }
 
 void CMainFrame::timeCheck()
@@ -159,9 +164,23 @@ void CMainFrame::timeCheck()
 	if( !m_alarmEnabled ) return;
     static SYSTEMTIME time;
     GetLocalTime( &time );
-    if( (!m_snoozing && m_alarmTime.isIncluded( time ) )
-        || (m_snoozeAlarmTime.isIncluded( time )) )
+	std::list< DayTime::TimeAndDays* > *tmp = &(m_alarms[time.wDayOfWeek]);
+    if( (!tmp->empty() && tmp->front()->isIncluded( time ) )
+        || (m_snoozing && m_snoozeAlarmTime.isIncluded( time )) )
     {
+		if( tmp->size() > 1 )
+		{
+			for( ULONG i = 0; i < tmp->size(); i++ )
+			{
+				if( tmp->front()->isIncluded( time ) )
+				{
+					tmp->push_back( tmp->front() );
+					tmp->pop_front();
+				}
+				else
+					break;
+			}
+		}
 		PostMessage( WM_DO_ALARM, 0, 0 );
     }
 }
@@ -220,16 +239,21 @@ LRESULT CMainFrame::OnSetVolume(UINT wParam, LONG lParam)
 	return 1;
 }
 
-void CMainFrame::closeITI()
+LRESULT CMainFrame::DoCloseITI(UINT wParam, LONG lParam)
 {
 	ITI::Disconnect();
+	return 1;
+}
+
+void CMainFrame::closeITI()
+{
+	PostMessage( WM_CLOSE_ITI, 0, 0 );
 }
 
 LRESULT CMainFrame::DoAlarm(UINT wParam, LONG lParam)
 {
-    //bool y = ( m_mainThread == GetCurrentThreadId() );
-    //m_systray.ShowBalloon( _T("Starting alarm, we'll see what this will do later."),
-    //    _T("DANGER DANGER"), NIIF_WARNING, 30 );
+	if( GetCurrentThreadId() != m_mainThread ) MessageBox( _T("main thread error") );
+	m_snoozing = false;
     try
     {
         if( m_increase )
@@ -263,6 +287,7 @@ LRESULT CMainFrame::DoAlarm(UINT wParam, LONG lParam)
                 m_tminute = m_minute;
             }*/
             m_snoozing = true;
+			//m_systray.SetMenuItemEnabled( ID_APP_CANCELSNOOZE, true );
             SYSTEMTIME tm;
             GetLocalTime( &tm );
 			int tmphour = tm.wHour;
@@ -285,6 +310,7 @@ LRESULT CMainFrame::DoAlarm(UINT wParam, LONG lParam)
             ITI::Disconnect();
             m_volumeIncreasing = VI_NOOP;
             m_snoozing = false;
+			//m_systray.SetMenuItemEnabled( ID_APP_CANCELSNOOZE, false );
 			SetToolTip();
         }
     }
@@ -321,8 +347,8 @@ void CMainFrame::InitReg()
 	DayTime::TimeAndDays tt( 8, 0, DayTime::WEEKDAYS );
 	b.data.resize(3);
 	tt.getToBinary( (BYTE*)b.data.c_str() );
-	if( !m_reg.has_key( _T("AlarmTime") ) )
-		m_reg[_T("AlarmTime")] = b;
+	//if( !m_reg.has_key( _T("AlarmTime") ) )
+	//	m_reg[_T("AlarmTime")] = b;
 	if( !m_reg.has_key( _T("Alarms") ) )
 		m_reg[_T("Alarms")] = b;
     if( !m_reg.has_key( _T("PlaylistName") ) )
@@ -330,9 +356,9 @@ void CMainFrame::InitReg()
     if( !m_reg.has_key( _T("Shuffle") ) )
         m_reg[_T("Shuffle")] = false;
 	if( !m_reg.has_key( _T("IncreaseVolume") ) )
-		m_reg[_T("IncreaseVolume")] = false;
+		m_reg[_T("IncreaseVolume")] = true;
 	if( !m_reg.has_key( _T("IncreaseTime") ) )
-		m_reg[_T("IncreaseTime")] = (DWORD)10;
+		m_reg[_T("IncreaseTime")] = (DWORD)30;
     if( !m_reg.has_key( _T("MinimizeOnAlarm") ) )
         m_reg[_T("MinimizeOnAlarm")] = true;
     if( !m_reg.has_key( _T("BeenRun") ) )
@@ -369,8 +395,23 @@ void CMainFrame::LoadReg()
 				DayTime::addSorted( *i, m_alarms[j] );
 		}
 	}
+	SYSTEMTIME tst;
+	GetLocalTime( &tst );
+	if( m_alarms[tst.wDayOfWeek].size() > 1 )
+	{
+		std::list< DayTime::TimeAndDays* > *tmp = &(m_alarms[tst.wDayOfWeek]);
+		DayTime::TimeAndDays now( tst );
+		if( *(tmp->back()) > now )
+		{
+			while( *(tmp->front()) < now )
+			{
+				tmp->push_back( tmp->front() );
+				tmp->pop_front();
+			}
+		}
+	}
 
-	m_alarmTime.setFromBinary( ((binary)m_reg[_T("AlarmTime")]).data.c_str() );
+	//m_alarmTime.setFromBinary( ((binary)m_reg[_T("AlarmTime")]).data.c_str() );
     m_shuffle = m_reg[_T("Shuffle")];
     m_pls.fromBin( ((binary)m_reg[_T("Playlist")]).data.c_str() );
     m_plsname = m_reg[_T("PlaylistName")];
@@ -396,16 +437,45 @@ void CMainFrame::SetToolTip()
 	if( m_alarmEnabled )
 	{
 		int hour, minute;
-		if( m_snoozing )
+
+
+		bool found = false;
+		SYSTEMTIME st;
+		GetLocalTime( &st );
+		for( int i = 0; i < 8; i++ )
 		{
-			m_snoozeAlarmTime.getTime( hour, minute );
-			_stprintf( buf, _T("iTooonz Alaaarrrm!!\nSnoozing until %d:%02d"), hour, minute );
+			if( m_alarms[ (i + st.wDayOfWeek) % 7 ].empty() )
+				continue;
+			m_alarms[ (i + st.wDayOfWeek) % 7 ].front()->getTime( hour, minute );
+			if( i == 0 && *(m_alarms[ (i + st.wDayOfWeek) % 7 ].front()) > DayTime::TimeAndDays( st ) )
+			{
+				if( m_snoozing && m_snoozeAlarmTime < *(m_alarms[ (i + st.wDayOfWeek) % 7 ].front()) )
+				{
+					m_snoozeAlarmTime.getTime( hour, minute );
+					_stprintf( buf, _T("iTooonz Alaaarrrm!!\nSnoozing until %d:%02d"), hour, minute );
+				}
+				else
+					_stprintf( buf, _T("iTooonz Alaaarrrm!!\nNext alarm set for %d:%02d"), hour, minute );
+			}
+			else if( i != 0 )
+			{
+				if( m_snoozing )
+				{
+					m_snoozeAlarmTime.getTime( hour, minute );
+					_stprintf( buf, _T("iTooonz Alaaarrrm!!\nSnoozing until %d:%02d"), hour, minute );
+				}
+				else
+					_stprintf( buf, _T("iTooonz Alaaarrrm!!\nNext alarm set for %s, %d:%02d"),
+					DayTime::DayNames[ (i + st.wDayOfWeek) % 7 ], hour, minute );
+			}
+			else
+				continue;
+			found = true;
+			break;
 		}
-		else
-		{
-			m_alarmTime.getTime( hour, minute );
-			_stprintf( buf, _T("iTooonz Alaaarrrm!!\nAlarm Set for %d:%02d"), hour, minute );
-		}
+		if( !found )
+			_stprintf( buf, _T("iTooonz Alaaarrrm!!\nNo alarms set") );
+
 	}
 	else
 		_tcscpy( buf, _T("iTooonz Alaaarrrm!!\nAlarm disabled") );
@@ -534,6 +604,12 @@ void CMainFrame::OnAlarmEnabled()
 {
 	if( m_systray.GetMenuItemChecked( ID_APP_ALARMENABLED ) == MF_CHECKED )
 	{
+		if( m_snoozing )
+		{
+			if( MessageBox( _T("Alarm is currently snoozing.  Are you sure you want to disable?"), _T("Confirm"),
+				MB_ICONQUESTION | MB_YESNO ) == IDNO )
+				return;
+		}
 		m_reg[_T("AlarmEnabled")] = m_alarmEnabled = false;
 		m_systray.CheckMenuItem( ID_APP_ALARMENABLED, MF_UNCHECKED );
 	}
@@ -543,4 +619,16 @@ void CMainFrame::OnAlarmEnabled()
 		m_systray.CheckMenuItem( ID_APP_ALARMENABLED, MF_CHECKED );
 	}
 	SetToolTip();
+}
+
+void CMainFrame::OnAppCancelsnooze()
+{
+	m_snoozing = false;
+	//m_systray.SetMenuItemEnabled( ID_APP_CANCELSNOOZE, false );
+	SetToolTip();
+}
+
+void CMainFrame::OnUpdateAppCancelsnooze(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable( m_snoozing );
 }

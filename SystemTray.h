@@ -79,6 +79,9 @@ public:
 	{ return m_menu.CheckMenuItem( nIDCheckItem, nCheck ); }
 	UINT GetMenuItemChecked( UINT nIDCheckItem, UINT nCheck = 0 );
 
+	//void SetMenuItemEnabled( UINT nIDEnableItem, bool enabled )
+	//{ m_menu.EnableMenuItem( nIDEnableItem, ((enabled)?MF_ENABLED:MF_GRAYED) ); }
+
     // Change or retrieve the icon displayed
     BOOL  SetIcon(HICON hIcon);
     BOOL  SetIcon(LPCTSTR lpszIconName);

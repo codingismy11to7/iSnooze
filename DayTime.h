@@ -16,7 +16,9 @@
 // along with iTunesAlarm; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#pragma once
+//#pragma once
+#ifndef _DAYTIME_H
+#define _DAYTIME_H
 
 #include <vector>
 #include <list>
@@ -36,6 +38,8 @@ namespace DayTime {
 	const unsigned char WEEKDAYS  = 62;
 
 	const unsigned char Win2DayTime[] = {SUNDAY,MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY};
+
+	extern const TCHAR *DayNames[7];
 
 	class TimeAndDays
 	{
@@ -94,3 +98,5 @@ namespace DayTime {
 	extern void cleanList( std::list< TimeAndDays* > &list );
 
 };
+
+#endif

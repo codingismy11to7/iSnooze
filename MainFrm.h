@@ -32,6 +32,7 @@
 #define WM_SET_VOLUME WM_APP+13
 #define WM_USER_RETURNED WM_APP+14
 #define WM_USER_GONE WM_APP+15
+#define WM_CLOSE_ITI WM_APP+16
 
 typedef enum { VI_NOOP, VI_INCREASE, VI_PAUSE } VolumeIncreaseState;
 
@@ -87,7 +88,7 @@ protected:
     long m_minute;
     long m_thour;
     long m_tminute;*/
-	DayTime::TimeAndDays m_alarmTime;
+	//DayTime::TimeAndDays m_alarmTime;
 	DayTime::TimeAndDays m_snoozeAlarmTime;
     bool m_snoozing;
     ITID m_pls;
@@ -119,6 +120,7 @@ public:
 	afx_msg LRESULT OnTrayNotification(UINT wParam, LONG lParam);
     afx_msg LRESULT OnConfigUpdate(UINT wParam, LONG lParam);
     afx_msg LRESULT DoAlarm(UINT wParam, LONG lParam);
+	afx_msg LRESULT DoCloseITI(UINT wParam, LONG lParam);
 	afx_msg LRESULT OnSetVolume(UINT wParam, LONG lParam);
     afx_msg LRESULT OnUserReturned(UINT wParam, LONG lParam);
     afx_msg LRESULT OnUserGone(UINT wParam, LONG lParam);
@@ -126,6 +128,8 @@ public:
 	afx_msg void OnPoopTestbubble();
     afx_msg void OnTestLaunch();
 	afx_msg void OnAlarmEnabled();
+	afx_msg void OnAppCancelsnooze();
+	afx_msg void OnUpdateAppCancelsnooze(CCmdUI *pCmdUI);
 };
 
 

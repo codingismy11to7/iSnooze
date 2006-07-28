@@ -22,6 +22,8 @@
 
 using namespace DayTime;
 
+const TCHAR *DayTime::DayNames[7] = { _T("Sun"), _T("Mon"), _T("Tue"), _T("Wed"), _T("Thu"), _T("Fri"), _T("Sat") };
+
 TimeAndDays::TimeAndDays( int hour, int minute, BYTE days )
 {
 	this->day = days;
@@ -68,13 +70,13 @@ tstring TimeAndDays::getString() const
 		str << _T("Mon-Fri");
 	else
 	{
-		if( day & SUNDAY ) str << "Sun ";
-		if( day & MONDAY ) str << "Mon ";
-		if( day & TUESDAY ) str << "Tue ";
-		if( day & WEDNESDAY ) str << "Wed ";
-		if( day & THURSDAY ) str << "Thu ";
-		if( day & FRIDAY ) str << "Fri ";
-		if( day & SATURDAY ) str << "Sat ";
+		if( day & SUNDAY ) str << DayNames[0] << _T(" ");
+		if( day & MONDAY ) str << DayNames[1] << _T(" ");
+		if( day & TUESDAY ) str << DayNames[2] << _T(" ");
+		if( day & WEDNESDAY ) str << DayNames[3] << _T(" ");
+		if( day & THURSDAY ) str << DayNames[4] << _T(" ");
+		if( day & FRIDAY ) str << DayNames[5] << _T(" ");
+		if( day & SATURDAY ) str << DayNames[6] << _T(" ");
 	}
 	tstring ret( str.str() );
 	if( ret[ret.size()-1] == _T(' ') )
