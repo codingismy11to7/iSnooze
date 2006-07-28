@@ -1,3 +1,32 @@
+// CToolTipRessourceButton by Jean-Louis GUENEGO
+// Thanks to Niek Albers.
+// http://www.codeproject.com/buttonctrl/tooltipressourcebutton.asp
+//
+// Additional code by Steven Scott (progoth@gmail.com)
+// Copyright (c) 2004
+//
+// This file with my changes is licensed under the GPL, see
+// above link for the original.
+//
+//
+// This file is part of iTunesAlarm.
+//
+// iTunesAlarm is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// iTunesAlarm is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with iTunesAlarm; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
+
+
 #if !defined(AFX_TOOLTIPBITMAPBUTTON_H__DFD18BA7_9BC4_11D5_8F75_0048546F01E7__INCLUDED_)
 #define AFX_TOOLTIPBITMAPBUTTON_H__DFD18BA7_9BC4_11D5_8F75_0048546F01E7__INCLUDED_
 
@@ -25,8 +54,6 @@
 #define baseCToolTipButton CButton
 // if you do not want to profit of CBitmapButton, put simply CButton instead
 
-// CToolTipRessourceButton by Jean-Louis GUENEGO
-// Thanks to Niek Albers.
 // A cool CButton with tooltips
 class CToolTipButton : public baseCToolTipButton
 {
