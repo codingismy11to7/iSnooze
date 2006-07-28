@@ -3,22 +3,13 @@
 //
 // Written by Chris Maunder (cmaunder@mail.com)
 // Copyright (c) 1998.
+// http://www.codeproject.com/shell/systemtray.asp?df=100
 //
-// This code may be used in compiled form in any way you desire. This
-// file may be redistributed unmodified by any means PROVIDING it is 
-// not sold for profit without the authors written consent, and 
-// providing that this notice and the authors name is included. If 
-// the source code in  this file is used in any commercial application 
-// then acknowledgement must be made to the author of this file 
-// (in whatever form you wish).
+// Additional code by Steven Scott (progoth@gmail.com)
+// Copyright (c) 2004
 //
-// This file is provided "as is" with no expressed or implied warranty.
-//
-// Expect bugs.
-// 
-// Please use and enjoy. Please let me know of any bugs/mods/improvements 
-// that you have found/implemented and I will fix/incorporate them into this
-// file. 
+// This file with my changes is licensed under the GPL, see
+// above link for the original.
 
 #ifndef _INCLUDED_SYSTEMTRAY_H_
 #define _INCLUDED_SYSTEMTRAY_H_
