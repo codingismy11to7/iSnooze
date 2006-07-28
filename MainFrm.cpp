@@ -66,16 +66,10 @@ CMainFrame::CMainFrame()
 		m_reg[_T("iTunesAlarm")] = RegMap();
 	m_reg = m_reg[_T("iTunesAlarm")];
 
-    LoadReg();
-
     m_mainThread = GetCurrentThreadId();
 
     //MSG t;
     //PeekMessage(&t, NULL, WM_USER, WM_USER, PM_NOREMOVE);
-
-	InitReg();
-
-    CreateThread( NULL, 0, TimerThread, this, 0, NULL );
 }
 
 CMainFrame::~CMainFrame()
@@ -179,6 +173,10 @@ void CMainFrame::LoadReg()
     m_pls = m_reg[_T("PlaylistName")];
 	m_increase = ( (m_reg[_T("IncreaseVolume")] == 0) ) ? false : true;
 	m_inclength = m_reg[_T("IncreaseTime")];
+
+	static TCHAR buf[200];
+	_stprintf( buf, _T("iTooonz Alaaarrrm!!\nAlarm Set for %d:%02d"), m_hour, m_minute );
+	m_systray.SetTooltipText( buf );
 }
 
 // CMainFrame diagnostics
@@ -227,6 +225,11 @@ void CMainFrame::StartTray()
 {
 	HICON ico = ::LoadIcon( AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME) );
 	m_systray.Create( this, WM_ICON_NOTIFY, _T("iTooonz Alaaarrrm!!"), ico, IDR_POPUP_MENU );
+
+	InitReg();
+    LoadReg();
+
+    CreateThread( NULL, 0, TimerThread, this, 0, NULL );
 }
 
 void CMainFrame::OnFileClose()
