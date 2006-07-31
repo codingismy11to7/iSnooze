@@ -160,6 +160,7 @@ CMainFrame::~CMainFrame()
 	delete m_config;
 	for( UINT j = 0; j < 7; j++ )
 		DayTime::cleanList( m_alarms[j] );
+	DayInfo::Destruct();
 }
 
 void CMainFrame::timeCheck()
@@ -515,7 +516,7 @@ void CMainFrame::SetToolTip()
 					}
 					else
 						_stprintf( buf, _T("iSnooze\nNext alarm set for %s, %d:%02d"),
-						DayTime::DayNames[ (i + st.wDayOfWeek) % 7 ], hour, minute );
+						/*DayTime::DayNames*/DayInfo::LongDayNames()[ (i + st.wDayOfWeek) % 7 ].c_str(), hour, minute );
 				}
 				else
 					continue;

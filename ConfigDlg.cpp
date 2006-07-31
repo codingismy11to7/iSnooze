@@ -74,6 +74,14 @@ BOOL CConfigDlg::OnInitDialog()
     SetForegroundWindow();
     GetDlgItem(IDC_PLAYLISTS)->SetFocus();
 
+	((CButton*)GetDlgItem( IDC_SUNDAY_CHECK ))->SetWindowText( DayInfo::LongDayNames()[0].c_str() );
+	((CButton*)GetDlgItem( IDC_MONDAY_CHECK ))->SetWindowText( DayInfo::LongDayNames()[1].c_str() );
+	((CButton*)GetDlgItem( IDC_TUESDAY_CHECK ))->SetWindowText( DayInfo::LongDayNames()[2].c_str() );
+	((CButton*)GetDlgItem( IDC_WEDNESDAY_CHECK ))->SetWindowText( DayInfo::LongDayNames()[3].c_str() );
+	((CButton*)GetDlgItem( IDC_THURSDAY_CHECK ))->SetWindowText( DayInfo::LongDayNames()[4].c_str() );
+	((CButton*)GetDlgItem( IDC_FRIDAY_CHECK ))->SetWindowText( DayInfo::LongDayNames()[5].c_str() );
+	((CButton*)GetDlgItem( IDC_SATURDAY_CHECK ))->SetWindowText( DayInfo::LongDayNames()[6].c_str() );
+
     return TRUE;
 }
 

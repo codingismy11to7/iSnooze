@@ -136,6 +136,9 @@
 				RelativePath=".\ConfigDlg.cpp">
 			</File>
 			<File
+				RelativePath=".\DayInfo.cpp">
+			</File>
+			<File
 				RelativePath=".\DayTime.cpp">
 			</File>
 			<File
@@ -220,6 +223,9 @@
 			</File>
 			<File
 				RelativePath=".\ConfigDlg.h">
+			</File>
+			<File
+				RelativePath=".\DayInfo.h">
 			</File>
 			<File
 				RelativePath=".\DayTime.h">

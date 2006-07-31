@@ -22,7 +22,7 @@
 
 using namespace DayTime;
 
-const TCHAR *DayTime::DayNames[7] = { _T("Sun"), _T("Mon"), _T("Tue"), _T("Wed"), _T("Thu"), _T("Fri"), _T("Sat") };
+//const TCHAR *DayTime::DayNames[7] = { _T("Sun"), _T("Mon"), _T("Tue"), _T("Wed"), _T("Thu"), _T("Fri"), _T("Sat") };
 
 TimeAndDays::TimeAndDays( int hour, int minute, BYTE days, bool enabled /*= true*/ )
 {
@@ -67,18 +67,18 @@ tstring TimeAndDays::getString() const
 		str << _T("(D!) ");
 	str << hour << _T(":") << std::setw(2) << std::setfill(_T('0')) << minute << _T(" ");
 	if( (0x7f & day) == ALL_DAYS )
-		str << _T("Every day");
+		str << DayInfo::ShortDayNames()[DayInfo::FirstDayOfWeek()] << _T("-") << DayInfo::ShortDayNames()[(DayInfo::FirstDayOfWeek()+6)%7];
 	else if( (0x7f & day) == WEEKDAYS )
-		str << _T("Mon-Fri");
+		str << DayInfo::ShortDayNames()[1] << _T("-") << DayInfo::ShortDayNames()[5];
 	else
 	{
-		if( day & SUNDAY ) str << DayNames[0] << _T(" ");
-		if( day & MONDAY ) str << DayNames[1] << _T(" ");
-		if( day & TUESDAY ) str << DayNames[2] << _T(" ");
-		if( day & WEDNESDAY ) str << DayNames[3] << _T(" ");
-		if( day & THURSDAY ) str << DayNames[4] << _T(" ");
-		if( day & FRIDAY ) str << DayNames[5] << _T(" ");
-		if( day & SATURDAY ) str << DayNames[6] << _T(" ");
+		if( day & SUNDAY ) str << /*DayNames*/ DayInfo::ShortDayNames()[0] << _T(" ");
+		if( day & MONDAY ) str << /*DayNames*/ DayInfo::ShortDayNames()[1] << _T(" ");
+		if( day & TUESDAY ) str << /*DayNames*/ DayInfo::ShortDayNames()[2] << _T(" ");
+		if( day & WEDNESDAY ) str << /*DayNames*/ DayInfo::ShortDayNames()[3] << _T(" ");
+		if( day & THURSDAY ) str << /*DayNames*/ DayInfo::ShortDayNames()[4] << _T(" ");
+		if( day & FRIDAY ) str << /*DayNames*/ DayInfo::ShortDayNames()[5] << _T(" ");
+		if( day & SATURDAY ) str << /*DayNames*/ DayInfo::ShortDayNames()[6] << _T(" ");
 	}
 	tstring ret( str.str() );
 	if( ret[ret.size()-1] == _T(' ') )

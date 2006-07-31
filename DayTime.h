@@ -41,7 +41,7 @@ namespace DayTime {
 
 	const unsigned char Win2DayTime[] = {SUNDAY,MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY};
 
-	extern const TCHAR *DayNames[7];
+	//extern const TCHAR *DayNames[7];
 
 	class TimeAndDays
 	{
