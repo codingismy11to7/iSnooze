@@ -85,3 +85,16 @@ span.features {
   text-decoration: underline;
   color: blue;
 }
+
+div.tab-pane {
+  width:750px;
+  height:450px;
+}
+
+iframe#source_browser {
+  width: 100px;
+  height: 100px;
+  border: 0px;
+  padding: 0px;
+  margin: 0px;
+}

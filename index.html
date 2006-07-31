@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="us-ascii" ?>
- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html PUBLIC "-//W3C/DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>iSnooze</title>
 <script type="text/javascript" src="js/tabpane.js"></script>
 <script type="text/javascript" src="js/site.js"></script>
@@ -14,10 +13,13 @@
 <h1><img src="files/isnoozeicon.gif" alt="iSnooze icon" class="icon" /> &nbsp;iSnooze</h1>
 <!-- <div style="clear:both;">&nbsp;</div> -->
 
-<div class="tab-pane" style="width:700px;height:400px;">
+<script type="text/javascript">var tabPane = new WebFXTabPane( document.getElementById('tab-page') );</script>
+
+<div class="tab-pane">
 
 <div id="about" class="tab-page">
 <h2 class="tab">About iSnooze</h2>
+<script type="text/javascript">tabPane.addTabPage( document.getElementById('about') );</script>
  iSnooze sits in your system tray and lets you schedule times for iTunes to
  start playing. Spacebar activated snooze, configurable snooze time, gradual
  volume increasing, multiple alarm schedules, playlist selection, temporary
@@ -26,10 +28,12 @@
 </div>
 <div id="author" class="tab-page">
 <h2 class="tab">Author</h2>
+<script type="text/javascript">tabPane.addTabPage( document.getElementById('author') );</script>
   <a href="http://www.progoth.com">Steven Scott</a> &lt;progoth&#64;gmail&#46;com&gt;
 </div>
 <div id="screens" class="tab-page">
  <h2 class="tab">Screenshots</h2>
+<script type="text/javascript">tabPane.addTabPage( document.getElementById('screens') );</script>
  <p>
   <a href="files/confignew.png"><img src="files/confignew-thumb.png" alt="new configure" /></a>
   <a href="files/config.png"><img src="files/config-thumb.png" alt="configure" /></a>
@@ -49,6 +53,7 @@
 </div>
 <div id="download" class="tab-page">
 <h2 class="tab">Get It</h2>
+<script type="text/javascript">tabPane.addTabPage( document.getElementById('download') );</script>
  <div>
   Release 1.3:
   <a href="files/SetupiSnooze-1.3.exe">SetupiSnooze-1.3.exe</a>
@@ -116,12 +121,17 @@
 </div>
 <div id="opensource" class="tab-page">
 <h2 class="tab">Source Code</h2>
+<script type="text/javascript">tabPane.addTabPage( document.getElementById('opensource') );</script>
+ <div id="source_text">
  <p>iSnooze is licensed under the GPL.  You can get the sourcecode here:</p>
- <p><a href="http://www.progoth.com:2020/viewcvs/viewcvs.cgi/itunesalarm/">Browse the Repository </a></p>
+ <p><a href="#" onclick="st=document.getElementById('source_text');st.style.display='none';si=document.getElementById('source_browser');si.style.display='block';si.style.width='100%';si.style.height='100%';os=document.getElementById('opensource');os.style.padding='0px';return false;">Browse the Repository</a></p>
+ </div>
+ <iframe id="source_browser" style="display:none;" src="http://progoth.com:2020/viewcvs/viewcvs.cgi/itunesalarm" scrolling="auto"><a href="http://www.progoth.com:2020/viewcvs/viewcvs.cgi/itunesalarm/">Browse the Repository</a></iframe>
 </div>
 <!-- <p>The latest source can always be checked out by pointing your <a href="http://subversion.tigris.org">Subversion</a> client to <a href="http://www.progoth.com:2020/itunesalarm/trunk">http://www.progoth.com:2020/itunesalarm/trunk</a></p> -->
 <div id="motivation" class="tab-page">
  <h2 class="tab">Why iSnooze?</h2>
+<script type="text/javascript">tabPane.addTabPage( document.getElementById('motivation') );</script>
  I got sick of getting to work late.
 </div>
 
