@@ -81,6 +81,7 @@ public:
 // Generated message map functions
 protected:
 	CSystemTray m_systray;
+	CMutex m_systrayMutex;
 	CConfigDlg *m_config;
 	RegMap m_reg;
 
@@ -90,27 +91,29 @@ protected:
     long m_tminute;*/
 	//DayTime::TimeAndDays m_alarmTime;
 	DayTime::TimeAndDays m_snoozeAlarmTime;
-    bool m_snoozing;
+	CMutex m_snoozeTimeMutex;
+    volatile bool m_snoozing;
     ITID m_pls;
 	tstring m_plsname;
-    bool m_shuffle;
-	bool m_increase;
-    bool m_minimize;
-    bool m_enableSnooze;
-    unsigned char m_snoozeTime;
-	int m_inclength;
-    VolumeIncreaseState m_volumeIncreasing;
-    bool m_muteOnRet;
-    bool m_snoozeDlgOpen;
+    volatile bool m_shuffle;
+	volatile bool m_increase;
+    volatile bool m_minimize;
+    volatile bool m_enableSnooze;
+    volatile unsigned char m_snoozeTime;
+	volatile int m_inclength;
+    volatile VolumeIncreaseState m_volumeIncreasing;
+    volatile bool m_muteOnRet;
+    volatile bool m_snoozeDlgOpen;
 
-	bool m_alarmEnabled;
+	volatile bool m_alarmEnabled;
 
-	bool m_oneAlarmExists;
-	bool m_oneAlarmEnabled;
+	volatile bool m_oneAlarmExists;
+	volatile bool m_oneAlarmEnabled;
 
     DWORD m_mainThread;
 
 	std::vector< std::list<DayTime::TimeAndDays*> > m_alarms;
+	CMutex m_alarmsMutex;
 
     void LoadReg();
 	void InitReg();

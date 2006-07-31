@@ -166,8 +166,10 @@ CMainFrame::~CMainFrame()
 void CMainFrame::timeCheck()
 {
 	if( !m_alarmEnabled ) return;
-    static SYSTEMTIME time;
+    SYSTEMTIME time;
     GetLocalTime( &time );
+	m_alarmsMutex.Lock();
+	m_snoozeTimeMutex.Lock();
 	std::list< DayTime::TimeAndDays* > *tmp = &(m_alarms[time.wDayOfWeek]);
     if( (!tmp->empty() && tmp->front()->isIncluded( time ) )
         || (m_snoozing && m_snoozeAlarmTime.isIncluded( time )) )
@@ -185,8 +187,15 @@ void CMainFrame::timeCheck()
 					break;
 			}
 		}
+		m_snoozeTimeMutex.Unlock();
+		m_alarmsMutex.Unlock();
 		PostMessage( WM_DO_ALARM, 0, 0 );
     }
+	else
+	{
+		m_snoozeTimeMutex.Unlock();
+		m_alarmsMutex.Unlock();
+	}
 }
 
 void CMainFrame::setVolume( UINT level )
@@ -302,8 +311,10 @@ LRESULT CMainFrame::DoAlarm(UINT wParam, LONG lParam)
                 if( tmphour > 23 ) tmphour = 0;
                 tmpmin -= 60;
             }
+			m_snoozeTimeMutex.Lock();
 			m_snoozeAlarmTime.setTime( tmphour, tmpmin );
 			m_snoozeAlarmTime.day = DayTime::ALL_DAYS;
+			m_snoozeTimeMutex.Unlock();
 			SetToolTip();
         }
         else // stop
@@ -391,6 +402,7 @@ void CMainFrame::LoadReg()
 
 	m_oneAlarmEnabled = m_oneAlarmExists = false;
 	DayTime::AlarmList::const_iterator i, end = al.end();
+	m_alarmsMutex.Lock();
 	for( UINT j = 0; j < 7; j++ )
 	{
 		DayTime::cleanList( m_alarms[j] );
@@ -422,6 +434,7 @@ void CMainFrame::LoadReg()
 			}
 		}
 	}
+	m_alarmsMutex.Unlock();
 
 	//m_alarmTime.setFromBinary( ((binary)m_reg[_T("AlarmTime")]).data.c_str() );
     m_shuffle = m_reg[_T("Shuffle")];
@@ -435,10 +448,12 @@ void CMainFrame::LoadReg()
     m_muteOnRet = m_reg[_T("MuteOnReturn")];
 
 	m_alarmEnabled = m_reg[_T("AlarmEnabled")];
+	m_systrayMutex.Lock();
 	if( m_alarmEnabled )
 		m_systray.CheckMenuItem( ID_APP_ALARMENABLED, MF_CHECKED );
 	else
 		m_systray.CheckMenuItem( ID_APP_ALARMENABLED, MF_UNCHECKED );
+	m_systrayMutex.Unlock();
 
 	SetToolTip();
 	SetIcon();
@@ -447,33 +462,45 @@ void CMainFrame::LoadReg()
 void CMainFrame::SetIcon()
 {
 	if( !m_alarmEnabled || !m_oneAlarmEnabled || !m_oneAlarmExists )
+	{
+		m_systrayMutex.Lock();
 		m_systray.SetIcon( IDI_DISABLED );
+		m_systrayMutex.Unlock();
+	}
 	else
 	{
 		bool found = false;
 		SYSTEMTIME st;
 		GetLocalTime( &st );
+		m_alarmsMutex.Lock();
 		for( int i = 0; i < 8; i++ )
 		{
 			if( m_alarms[ (i + st.wDayOfWeek) % 7 ].empty() )
 				continue;
 			if( (i != 0) || (i == 0 && *(m_alarms[ (i + st.wDayOfWeek) % 7 ].front()) > DayTime::TimeAndDays( st )) )
 			{
+				m_systrayMutex.Lock();
 				m_systray.SetIcon( IDR_MAINFRAME );
+				m_systrayMutex.Unlock();
 			}
 			else
 				continue;
 			found = true;
 			break;
 		}
+		m_alarmsMutex.Unlock();
 		if( !found )
+		{
+			m_systrayMutex.Lock();
 			m_systray.SetIcon( IDI_DISABLED );
+			m_systrayMutex.Unlock();
+		}
 	}
 }
 
 void CMainFrame::SetToolTip()
 {
-	static TCHAR buf[1024];
+	TCHAR buf[1024];
 	if( m_alarmEnabled )
 	{
 		if( !m_oneAlarmExists )
@@ -492,6 +519,8 @@ void CMainFrame::SetToolTip()
 			bool found = false;
 			SYSTEMTIME st;
 			GetLocalTime( &st );
+			m_alarmsMutex.Lock();
+			m_snoozeTimeMutex.Lock();
 			for( int i = 0; i < 8; i++ )
 			{
 				if( m_alarms[ (i + st.wDayOfWeek) % 7 ].empty() )
@@ -523,6 +552,8 @@ void CMainFrame::SetToolTip()
 				found = true;
 				break;
 			}
+			m_snoozeTimeMutex.Unlock();
+			m_alarmsMutex.Unlock();
 			if( !found )
 				_stprintf( buf, _T("iSnooze\nNo alarms have any days selected!") );
 		}
@@ -530,7 +561,9 @@ void CMainFrame::SetToolTip()
 	}
 	else
 		_tcscpy( buf, _T("iSnooze\nAlarm disabled") );
+	m_systrayMutex.Lock();
 	m_systray.SetTooltipText( buf );
+	m_systrayMutex.Unlock();
 }
 
 // CMainFrame diagnostics
@@ -653,6 +686,7 @@ void CMainFrame::OnTestLaunch()
 
 void CMainFrame::OnAlarmEnabled()
 {
+	m_systrayMutex.Lock();
 	if( m_systray.GetMenuItemChecked( ID_APP_ALARMENABLED ) == MF_CHECKED )
 	{
 		if( m_snoozing )
@@ -672,6 +706,7 @@ void CMainFrame::OnAlarmEnabled()
 		//m_systray.SetIcon( IDR_MAINFRAME );
 		SetIcon();
 	}
+	m_systrayMutex.Unlock();
 	SetToolTip();
 }
 

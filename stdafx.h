@@ -53,6 +53,7 @@
 #include <afxext.h>         // MFC extensions
 #include <afxtempl.h>		// MFC collection classes
 #include <afxdisp.h>        // MFC Automation classes
+#include <afxmt.h>			// MFC Multithreading classes
 
 #include <afxdtctl.h>		// MFC support for Internet Explorer 4 Common Controls
 #ifndef _AFX_NO_AFXCMN_SUPPORT
