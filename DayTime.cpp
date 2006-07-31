@@ -64,7 +64,7 @@ tstring TimeAndDays::getString() const
 	int hour, minute;
 	getTime( hour, minute );
 	if( !( day & ALARM_ENABLED ) )
-		str << _T("(D!) ");
+		str << _T("(X) ");
 	str << hour << _T(":") << std::setw(2) << std::setfill(_T('0')) << minute << _T(" ");
 	if( (0x7f & day) == ALL_DAYS )
 		str << DayInfo::ShortDayNames()[DayInfo::FirstDayOfWeek()] << _T("-") << DayInfo::ShortDayNames()[(DayInfo::FirstDayOfWeek()+6)%7];
