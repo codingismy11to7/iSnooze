@@ -56,18 +56,6 @@ void RegMap::clean()
 
 RegMap& RegMap::operator[]( const TCHAR *item ) const
 {
-    // I'm spending way too much time trying to get caching to work right,
-    // and to update after a value was changed.  screw it
-	/*if( m_regcache.find( item ) != m_regcache.end() )
-    {
-        if( m_regcache[item]->m_create )
-        {
-            delete m_regcache[item];
-            m_regcache.erase( item );
-        }
-        else
-		    return *(m_regcache[item]);
-    }*/
 	HKEY key;
     LONG hr;
     if( _tcslen( item ) )
@@ -205,32 +193,10 @@ RegMap &RegMap::operator=( const RegMap &o )
         setValue( o );
     }
 
-	if( /*!m_isval && */!m_create )
+	if( !m_create )
 	{
-        //if( m_isval ) clean();
-		//m_isval = o.m_isval;
 		m_key = o.m_key;
 		m_root = o.m_root;
-		//m_regcache = o.m_regcache;
-		/*if( m_isval )
-		{
-			m_type = o.m_type;
-			switch( m_type )
-			{
-			case NUMBER:
-				m_val.dword = o.m_val.dword;
-				break;
-			case SZ:
-				m_val.str = new tstring( *o.m_val.str );
-				break;
-			case BIN:
-				m_val.bin = new binary( *o.m_val.bin );
-				break;
-			case MV_SZ:
-				m_val.strarray = new std::vector<tstring>( *o.m_val.strarray );
-				break;
-			}
-		}*/
 		return *this;
 	}
 
@@ -451,6 +417,3 @@ void RegMap::deleteKey() const
 	delete[] todel;
 }
 
-		/*TCHAR msg[1024];
-		FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM, NULL, hr, 0, msg, 1023, NULL );
-		throw wruntime_error( msg );*/
