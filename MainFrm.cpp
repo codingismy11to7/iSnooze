@@ -291,6 +291,8 @@ LRESULT CMainFrame::DoAlarm(UINT wParam, LONG lParam)
         {
             m_snoozeDlgOpen = false;
             ITI::Connect();
+			ITI::Play();
+			ITI::Next();
             ITI::Stop();
             ITI::Disconnect();
             m_volumeIncreasing = VI_NOOP;
