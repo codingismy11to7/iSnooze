@@ -129,8 +129,11 @@ void ITI::playPlaylist( const ITID &plid, const tstring &plname, bool shuffle )
 	{
 		if( SUCCEEDED(tmp->QueryInterface( IID_IITPlaylist, (void**)&pl )) )
 		{
+			pl->put_SongRepeat(ITPlaylistRepeatModeAll);
 			pl->put_Shuffle( ( (shuffle) ? -1 : 0 ) );
 			m_iTunesApp->Stop();
+			pl->put_Shuffle(0);
+			pl->put_Shuffle(shuffle ? -1 : 0);
 			pl->PlayFirstTrack();
 
 			pl->Release();

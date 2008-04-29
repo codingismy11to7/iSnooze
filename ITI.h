@@ -70,6 +70,8 @@ public:
     { ITI::instance()->pause(); }
     static void Play()
     { ITI::instance()->play(); }
+	static void Next()
+	{ ITI::instance()->next(); }
 
 	~ITI();
 
@@ -89,6 +91,8 @@ private:
     void minimize();
     void stop()
     { m_iTunesApp->Stop(); }
+	void next()
+	{ m_iTunesApp->NextTrack(); }
     void pause()
     { m_iTunesApp->Pause(); }
     void play()
