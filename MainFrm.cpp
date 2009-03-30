@@ -482,7 +482,7 @@ void CMainFrame::SetIcon()
 			if( (i != 0) || (i == 0 && *(m_alarms[ (i + st.wDayOfWeek) % 7 ].front()) > DayTime::TimeAndDays( st )) )
 			{
 				m_systrayMutex.Lock();
-				m_systray.SetIcon( IDR_MAINFRAME );
+				m_systray.SetIcon( IDI_TRAYICON );
 				m_systrayMutex.Unlock();
 			}
 			else
@@ -615,7 +615,7 @@ void CMainFrame::StartTray()
 	//m_systrayMenu.LoadMenu( IDR_POPUP_MENU );
 
 	//HICON ico = ::LoadIcon( AfxGetResourceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME) );
-	HICON ico = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR );
+	HICON ico = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_TRAYICON), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR );
 	m_systray.Create( this, WM_ICON_NOTIFY, _T("iSnooze"), ico, IDR_POPUP_MENU );
 
 	InitReg();

@@ -18,6 +18,7 @@
 #define IDS_PAYPAL_TIP                  134
 #define IDD_SNOOZE_DIALOG               136
 #define IDI_DISABLED                    143
+#define IDI_TRAYICON					153
 #define IDC_CHECK1                      1000
 #define IDC_CHECK_SHUFFLE               1000
 #define IDC_COMBO1                      1001
